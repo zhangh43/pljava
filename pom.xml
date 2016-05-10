@@ -5,16 +5,16 @@
 	<artifactId>pljava.app</artifactId>
 	<version>1.5.0</version>
 	<packaging>pom</packaging>
-	<name>PostgreSQL PL/Java</name>
-	<url>https://tada.github.io/pljava/</url>
-	<description>Java stored procedures for PostgreSQL</description>
+	<name>Greenplum PL/Java</name>
+	<url>http://gpdb.docs.pivotal.io/</url>
+	<description>Java stored procedures for Greenplum</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<organization>
-		<name>Tada AB</name>
-		<url>http://tada.se/eng/</url>
+		<name>Pivotal Software, Inc.</name>
+		<url>https://pivotal.io/</url>
 	</organization>
 
 	<inceptionYear>2003</inceptionYear>
@@ -26,26 +26,26 @@
 		</license>
 	</licenses>
 
-	<issueManagement>
-		<system>Github</system>
-		<url>https://github.com/tada/pljava/issues</url>
-	</issueManagement>
-
 	<mailingLists>
 		<mailingList>
-			<name>Mailing list for PL/Java users and developers</name>
-			<post>pljava-dev@lists.pgfoundry.org</post>
+			<name>Mailing list for Greenplum developers</name>
+			<post>gpdb-dev@greenplum.org</post>
 			<archive>http://lists.pgfoundry.org/pipermail/pljava-dev/</archive>
 			<otherArchives>
-				<otherArchive>http://news.gmane.org/gmane.comp.db.postgresql.pljava</otherArchive>
+				<otherArchive>https://groups.google.com/a/greenplum.org/forum/#!forum/gpdb-dev</otherArchive>
 			</otherArchives>
+		</mailingList>
+        <mailingList>
+			<name>Mailing list for Greenplum users</name>
+			<post>gpdb-users@greenplum.org</post>
+			<archive>https://groups.google.com/a/greenplum.org/forum/#!forum/gpdb-users</archive>
 		</mailingList>
 	</mailingLists>
 
 	<scm>
-		<connection>scm:git:https://github.com/tada/pljava.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/tada/pljava.git</developerConnection>
-		<url>https://github.com/tada/pljava/tree/master/</url>
+		<connection>scm:git:https://github.com/greenplum-db/pljava.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:greenplum-db/pljava.git</developerConnection>
+		<url>https://github.com/greenplum-db/pljava/tree/master/</url>
 	</scm>
 
 	<modules>
@@ -58,13 +58,13 @@
 		<module>pljava-packaging</module>
 	</modules>
 
-	<distributionManagement>
+	<!-- distributionManagement>
 		<site>
 			<id>site.pljava.tada.se</id>
 			<name>PL/Java Developer Info</name>
 			<url>github:http://tada.github.io/pljava/</url>
 		</site>
-	</distributionManagement>
+	</distributionManagement -->
 
 	<build>
 		<plugins>
