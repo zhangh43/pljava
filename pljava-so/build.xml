@@ -50,6 +50,9 @@
 		<exec executable="pg_config" outputproperty="PGSQL_INCLUDEDIR">
 			<arg line="--includedir"/>
 		</exec>
+		<exec executable="pg_config" outputproperty="PGSQL_PKGINCLUDEDIR">
+			<arg line="--pkgincludedir"/>
+		</exec>
 		<exec executable="pg_config" outputproperty="PGSQL_INCLUDEDIR-SERVER">
 			<arg line="--includedir-server"/>
 		</exec>
@@ -96,6 +99,7 @@
 			<entry key="PGSQL_PKGLIBDIR" value="${PGSQL_PKGLIBDIR}" />
 			<entry key="PGSQL_LIBDIR" value="${PGSQL_LIBDIR}" />
 			<entry key="PGSQL_INCLUDEDIR" value="${PGSQL_INCLUDEDIR}" />
+			<entry key="PGSQL_PKGINCLUDEDIR" value="${PGSQL_PKGINCLUDEDIR}" />
 			<entry key="PGSQL_INCLUDEDIR-SERVER" value="${PGSQL_INCLUDEDIR-SERVER}" />
 			<entry key="MSVC_RINT" value="${MSVC_RINT}" />
 		</propertyfile>
