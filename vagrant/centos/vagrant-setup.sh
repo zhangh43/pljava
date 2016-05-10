@@ -18,8 +18,9 @@ sudo yum -y install epel-release
 sudo yum -y install htop
 sudo yum -y install perl-Env
 sudo yum -y install libxml2 libxml2-devel
-sudo yum -y install java-1.8.0-openjdk
 sudo yum -y install libffi-devel
+sudo yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
+sudo yum -y install maven
 wget https://bootstrap.pypa.io/get-pip.py
 sudo python get-pip.py
 sudo pip install psi lockfile paramiko setuptools epydoc psutil
