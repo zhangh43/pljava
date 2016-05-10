@@ -7,3 +7,4 @@ target/javadoc-bundle-options
 pljava-so/pgsql.properties
 pljava-so/target/
 .vagrant/
+target/
