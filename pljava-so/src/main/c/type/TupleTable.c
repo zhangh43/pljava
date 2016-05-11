@@ -31,7 +31,7 @@ jobject TupleTable_createFromSlot(TupleTableSlot* tts)
 	curr = MemoryContextSwitchTo(JavaMemoryContext);
 
 	tupdesc = TupleDesc_internalCreate(tts->tts_tupleDescriptor);
-	tuple   = ExecCopySlotTuple(tts);
+	tuple   = ExecCopySlotHeapTuple(tts);
 	tuples  = Tuple_createArray(&tuple, 1, false);
 
 	MemoryContextSwitchTo(curr);

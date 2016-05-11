@@ -21,16 +21,21 @@
 
 jobject HeapTupleHeader_getTupleDesc(HeapTupleHeader ht)
 {
-	jobject result;
+	jobject result = 0;
 	TupleDesc tupleDesc =
 	  lookup_rowtype_tupdesc(HeapTupleHeaderGetTypeId(ht),
 				 HeapTupleHeaderGetTypMod(ht));
-	result = TupleDesc_create(tupleDesc);
-	/*
-	 * TupleDesc_create() creates a copy of the tuple descriptor, so
-	 * can release this now
-	 */
-	ReleaseTupleDesc(tupleDesc);
+
+	if (tupleDesc != NULL)
+	{
+		result = TupleDesc_create(tupleDesc);
+		/*
+		 * TupleDesc_create() creates a copy of the tuple descriptor, so
+		 * can release this now
+		 */
+		ReleaseTupleDesc(tupleDesc);
+	}
+
 	return result;
 }
 
