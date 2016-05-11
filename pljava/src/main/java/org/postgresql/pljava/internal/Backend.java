@@ -62,6 +62,17 @@ public class Backend
 	}
 
 	/**
+	 * returns the library path '$libdir'
+	 */
+	public static String getLibraryPath()
+	{
+		synchronized(THREADLOCK)
+		{
+			return _getLibraryPath();
+		}
+	}
+
+	/**
 	 * Returns the size of the statement cache.
 	 * @return the size of the statement cache.
 	 */
@@ -192,6 +203,11 @@ public class Backend
 					// java installation
 					// directory.
 					//
+					String classpath = Backend._getConfigOption("pljava_classpath");
+					String[] classpathArray = classpath.split(":");
+					String jarpath =  Backend.getLibraryPath() + "/java";
+
+					File gpJavaLib = new File(jarpath);
 					File javaHome = new File(System.getProperty("java.home"));
 					File accessedFile = new File(perm.getName());
 					File fileDir = accessedFile.getParentFile();
@@ -199,6 +215,16 @@ public class Backend
 					{
 						if(fileDir.equals(javaHome))
 							return;
+						if(fileDir.equals(gpJavaLib))
+							return;
+						// now search through the classpaths
+						for (int i = 0; i < classpathArray.length; i++)
+						{
+							File classPathEntry = new File(classpathArray[i]);
+							// need to check to see if we can read the directory as well as read the actual file.
+							if (fileDir.equals(classPathEntry.getPath()) || fileDir.equals(classPathEntry.getParentFile()))
+								return;
+						}
 						fileDir = fileDir.getParentFile();
 					}
 				}
@@ -291,6 +317,7 @@ public class Backend
 	public native static boolean isReleaseLingeringSavepoints();
 
 	private native static String _getConfigOption(String key);
+	private native static String _getLibraryPath();
 
 	private native static int  _getStatementCacheSize();
 	private native static void _log(int logLevel, String str);

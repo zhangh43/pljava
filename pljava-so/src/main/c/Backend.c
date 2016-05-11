@@ -26,9 +26,11 @@
 #include <dynloader.h>
 #include <storage/ipc.h>
 #include <storage/proc.h>
+#include <storage/sinval.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "org_postgresql_pljava_internal_Backend.h"
 #include "pljava/Invocation.h"
@@ -89,6 +91,10 @@ extern PLJAVADLLEXPORT void _PG_init(void);
 
 jlong mainThreadId;
 
+static pthread_t s_mainThreadIdForHandler;
+static bool s_handlerSubstituted = false;
+static pqsigfunc s_oldHandlerFunc = NULL;
+
 static JavaVM* s_javaVM = 0;
 static jclass  s_Backend_class;
 static jmethodID s_setTrusted;
@@ -97,7 +103,6 @@ static char* vmoptions;
 static char* classpath;
 static char* implementors;
 static int   statementCacheSize;
-static bool  pljavaDebug;
 static bool  pljavaReleaseLingeringSavepoints;
 static bool  pljavaEnabled;
 static bool  s_currentTrust;
@@ -128,7 +133,6 @@ typedef struct {
 	unsigned int  capacity;
 } JVMOptList;
 
-static void registerGUCOptions(void);
 static jint initializeJavaVM(JVMOptList*);
 static void JVMOptList_init(JVMOptList*);
 static void JVMOptList_delete(JVMOptList*);
@@ -150,7 +154,6 @@ static void reLogWithChangedLevel(int);
 #ifdef USE_PLJAVA_SIGHANDLERS
 static void pljavaStatementCancelHandler(int);
 static void pljavaDieHandler(int);
-static void pljavaQuickDieHandler(int);
 #endif
 
 enum initstage
@@ -391,7 +394,6 @@ static void initsequencer(enum initstage is, bool tolerant)
 	switch (is)
 	{
 	case IS_FORMLESS_VOID:
-		registerGUCOptions();
 		initstage = IS_GUCS_REGISTERED;
 
 	case IS_GUCS_REGISTERED:
@@ -463,7 +465,7 @@ static void initsequencer(enum initstage is, bool tolerant)
 #ifdef PLJAVA_DEBUG
 		/* Hard setting for debug. Don't forget to recompile...
 		 */
-		pljavaDebug = 1;
+		pljava_debug = 1;
 #endif
 		initstage = IS_MISC_ONCE_DONE;
 
@@ -511,7 +513,6 @@ static void initsequencer(enum initstage is, bool tolerant)
 #ifdef USE_PLJAVA_SIGHANDLERS
 		pqsignal(SIGINT,  pljavaStatementCancelHandler);
 		pqsignal(SIGTERM, pljavaDieHandler);
-		pqsignal(SIGQUIT, pljavaQuickDieHandler);
 #endif
 		/* Register an on_proc_exit handler that destroys the VM
 		 */
@@ -764,6 +765,11 @@ static void initPLJavaClasses(void)
 	  	Java_org_postgresql_pljava_internal_Backend_isReleaseLingeringSavepoints
 		},
 		{
+		"_getLibraryPath",
+		"()Ljava/lang/String;",
+		Java_org_postgresql_pljava_internal_Backend__1getLibraryPath
+		},
+		{
 		"_getConfigOption",
 		"(Ljava/lang/String;)Ljava/lang/String;",
 		Java_org_postgresql_pljava_internal_Backend__1getConfigOption
@@ -963,8 +969,34 @@ static char* getClassPath(const char* prefix)
 	HashMap unique = HashMap_create(13, CurrentMemoryContext);
 	StringInfoData buf;
 	initStringInfo(&buf);
-	appendPathParts(classpath, &buf, unique, prefix);
+
+	/* Put the pljava installed in the $libdir first in the path */
+	appendPathParts("$libdir/pljava.jar", &buf, unique, prefix);
+
+#if 0
+	/*
+	 * Currently pljava.classpath is user setable, which makes this a
+	 * security problem.  If CLASSPATH needs to be setable beyond simply
+	 * locating the pljava.jar file then this requires modification.
+	 *
+	 * The Greenplum version of pljava currently uses the classpath guc
+	 * differently anyhow due to differences in storing the jar files
+	 * in the filesystem rather than in the database.
+	 */
+	appendPathParts(pljava_classpath, &buf, unique, prefix);
+
+	/*
+	 * For this to be useful it needs to be propagated from the
+	 * master to all the segments, otherwise it wouldn't be the
+	 * same everyplace and that would be a problem.
+	 *
+	 * Using a jvm_classpath GUC makes more architectural sense,
+	 * for it to be secure it would need to be super-user only,
+	 * possibly conf file only.
+	 */
 	appendPathParts(getenv("CLASSPATH"), &buf, unique, prefix);
+#endif
+
 	PgObject_free((PgObject)unique);
 	path = buf.data;
 	if(strlen(path) == 0)
@@ -1003,11 +1035,23 @@ static void pljavaDieHandler(int signum)
 	}
 }
 
-static void pljavaQuickDieHandler(int signum)
+static void PLCatchupInterruptHandler(int signo)
 {
-	/* Just die. No ereporting here since we don't know what thread this is.
-	 */
-	exit(1);
+	if(s_oldHandlerFunc == NULL)
+	{
+		return;
+	}
+
+	pthread_t currentThreadId = pthread_self();
+
+	if(currentThreadId == s_mainThreadIdForHandler)
+	{
+		s_oldHandlerFunc(signo);
+	}
+	else
+	{
+		pthread_kill(s_mainThreadIdForHandler, signo);
+	}
 }
 
 static sigjmp_buf recoverBuf;
@@ -1082,6 +1126,19 @@ static void _destroyJavaVM(int status, Datum dummy)
 		elog(DEBUG2, "done shutting down the Java virtual machine");
 		s_javaVM = 0;
 		currentInvocation = 0;
+
+		/*
+		 * Recover the handler of SIGUSR1 when initiate JVM failed.
+		 * */
+		if(s_oldHandlerFunc == NULL)
+		{
+			pqsignal(SIGUSR1, SIG_IGN);
+		}
+		else
+		{
+			pqsignal(SIGUSR1, s_oldHandlerFunc);
+		}
+		s_handlerSubstituted = false;
 	}
 }
 
@@ -1152,7 +1209,7 @@ static void JVMOptList_addVisualVMName(JVMOptList* jol)
  */
 static void addUserJVMOptions(JVMOptList* optList)
 {
-	const char* cp = vmoptions;
+	const char* cp = pljava_vmoptions;
 	
 	if(cp != NULL)
 	{
@@ -1249,15 +1306,29 @@ static void checkIntTimeType(void)
 	elog(DEBUG2, integerDateTimes ? "Using integer_datetimes" : "Not using integer_datetimes");
 }
 
+static char *get_jni_errmsg(jint jnicode)
+{
+	switch (jnicode)
+	{
+		case -1:        return "unknown error";
+		case -2:        return "thread detached from the VM";
+		case -3:        return "JNI version error";
+		case -4:        return "not enough memory";
+		case -5:        return "VM already created";
+		case -6:        return "invalid arguments";
+		default:        return "unknown error";
+	}
+}
+
 static jint initializeJavaVM(JVMOptList *optList)
 {
 	jint jstat;
 	JavaVMInitArgs vm_args;
 
-	if(pljavaDebug)
+	if(pljava_debug)
 	{
-		elog(INFO, "Backend pid = %d. Attach the debugger and set pljavaDebug to false to continue", getpid());
-		while(pljavaDebug)
+		elog(INFO, "Backend pid = %d. Attach the debugger and set pljava_debug to false to continue", getpid());
+		while(pljava_debug)
 			pg_usleep(1000000L);
 	}
 
@@ -1279,159 +1350,6 @@ static jint initializeJavaVM(JVMOptList *optList)
 	JVMOptList_delete(optList);
 
 	return jstat;
-}
-
-static void registerGUCOptions(void)
-{
-	char pathbuf[MAXPGPATH];
-
-	DefineCustomStringVariable(
-		"pljava.libjvm_location",
-		"Path to the libjvm (.so, .dll, etc.) file in Java's jre/lib area",
-		NULL, /* extended description */
-		&libjvmlocation,
-		#if PG_VERSION_NUM >= 80400
-			"libjvm",
-		#endif
-		PGC_SUSET,
-		#if PG_VERSION_NUM >= 80400
-			0,    /* flags */
-		#endif
-		#if PG_VERSION_NUM >= 90100
-			check_libjvm_location,
-		#endif
-		assign_libjvm_location,
-		NULL); /* show hook */
-
-	DefineCustomStringVariable(
-		"pljava.vmoptions",
-		"Options sent to the JVM when it is created",
-		NULL, /* extended description */
-		&vmoptions,
-		#if PG_VERSION_NUM >= 80400
-			NULL, /* boot value */
-		#endif
-		PGC_SUSET,
-		#if PG_VERSION_NUM >= 80400
-			0,    /* flags */
-		#endif
-		#if PG_VERSION_NUM >= 90100
-			check_vmoptions,
-		#endif
-		assign_vmoptions,
-		NULL); /* show hook */
-
-	DefineCustomStringVariable(
-		"pljava.classpath",
-		"Classpath used by the JVM",
-		NULL, /* extended description */
-		&classpath,
-		#if PG_VERSION_NUM >= 80400
-			InstallHelper_defaultClassPath(pathbuf), /* boot value */
-		#endif
-		PGC_SUSET,
-		#if PG_VERSION_NUM >= 80400
-			0,    /* flags */
-		#endif
-		#if PG_VERSION_NUM >= 90100
-			check_classpath,
-		#endif
-		assign_classpath,
-		NULL); /* show hook */
-
-	DefineCustomBoolVariable(
-		"pljava.debug",
-		"Stop the backend to attach a debugger",
-		NULL, /* extended description */
-		&pljavaDebug,
-		#if PG_VERSION_NUM >= 80400
-			false, /* boot value */
-		#endif
-		PGC_USERSET,
-		#if PG_VERSION_NUM >= 80400
-			0,    /* flags */
-		#endif
-		#if PG_VERSION_NUM >= 90100
-			NULL, /* check hook */
-		#endif
-		NULL, NULL); /* assign hook, show hook */
-
-	DefineCustomIntVariable(
-		"pljava.statement_cache_size",
-		"Size of the prepared statement MRU cache",
-		NULL, /* extended description */
-		&statementCacheSize,
-		#if PG_VERSION_NUM >= 80400
-			11,   /* boot value */
-		#endif
-		0, 512,   /* min, max values */
-		PGC_USERSET,
-		#if PG_VERSION_NUM >= 80400
-			0,    /* flags */
-		#endif
-		#if PG_VERSION_NUM >= 90100
-			NULL, /* check hook */
-		#endif
-		NULL, NULL); /* assign hook, show hook */
-
-	DefineCustomBoolVariable(
-		"pljava.release_lingering_savepoints",
-		"If true, lingering savepoints will be released on function exit. "
-		"If false, they will be rolled back",
-		NULL, /* extended description */
-		&pljavaReleaseLingeringSavepoints,
-		#if PG_VERSION_NUM >= 80400
-			false, /* boot value */
-		#endif
-		PGC_USERSET,
-		#if PG_VERSION_NUM >= 80400
-			0,    /* flags */
-		#endif
-		#if PG_VERSION_NUM >= 90100
-			NULL, /* check hook */
-		#endif
-		NULL, NULL); /* assign hook, show hook */
-
-	DefineCustomBoolVariable(
-		"pljava.enable",
-		"If off, the Java virtual machine will not be started until set on.",
-		"This is mostly of use on PostgreSQL versions < 9.2, where option "
-		"settings changed before LOADing PL/Java may be rejected, so they must "
-		"be made after LOAD, but before the virtual machine is started.",
-		&pljavaEnabled,
-		#if PG_VERSION_NUM >= 90200
-			true,  /* boot value */
-		#elif PG_VERSION_NUM >= 80400
-			false, /* boot value */
-		#endif
-		PGC_USERSET,
-		#if PG_VERSION_NUM >= 80400
-			0,    /* flags */
-		#endif
-		#if PG_VERSION_NUM >= 90100
-			check_enabled, /* check hook */
-		#endif
-		assign_enabled,
-		NULL); /* show hook */
-
-	DefineCustomStringVariable(
-		"pljava.implementors",
-		"Implementor names recognized in deployment descriptors",
-		NULL, /* extended description */
-		&implementors,
-		#if PG_VERSION_NUM >= 80400
-			"postgresql", /* boot value */
-		#endif
-		PGC_USERSET,
-		#if PG_VERSION_NUM >= 80400
-			GUC_LIST_INPUT | GUC_LIST_QUOTE,
-		#endif
-		#if PG_VERSION_NUM >= 90100
-			NULL, /* check hook */
-		#endif
-		NULL, NULL); /* assign hook, show hook */
-
-	EmitWarningsOnPlaceholders("pljava");
 }
 
 static Datum internalCallHandler(bool trusted, PG_FUNCTION_ARGS);
@@ -1462,6 +1380,23 @@ static Datum internalCallHandler(bool trusted, PG_FUNCTION_ARGS)
 {
 	Invocation ctx;
 	Datum retval = 0;
+
+#ifdef USE_PLJAVA_SIGHANDLERS
+	/*
+	 * Substitute SIGUSR1 handler CatchupInterruptHandler with new local
+	 * handler PLCatchupInterruptHandler, which will strictly let main
+	 * thread of GPDB to process the signal rather than any other threads.
+	 *
+	 * Resolving possible lwlock releasing crash caused by SIGUSR1.
+	 * MPP-23735
+	 */
+	if(!s_handlerSubstituted)
+	{
+		s_mainThreadIdForHandler = pthread_self();
+		s_oldHandlerFunc = pqsignal(SIGUSR1, PLCatchupInterruptHandler);
+		s_handlerSubstituted = true;
+	}
+#endif
 
 	/*
 	 * Just in case it could be helpful in offering diagnostics later, hang
@@ -1630,4 +1565,28 @@ Java_org_postgresql_pljava_internal_Backend__1isCreatingExtension(JNIEnv *env, j
 	bool inExtension = false;
 	pljavaCheckExtension( &inExtension);
 	return inExtension ? JNI_TRUE : JNI_FALSE;
+}
+
+/*
+ * Class:     org_postgresql_pljava_internal_Backend
+ * Method:    _getLibraryPath
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL
+JNICALL Java_org_postgresql_pljava_internal_Backend__1getLibraryPath(JNIEnv* env, jclass cls)
+{
+	jstring result = 0;
+
+	BEGIN_NATIVE
+	PG_TRY();
+    {
+		result = String_createJavaStringFromNTS(pkglib_path);
+	}
+	PG_CATCH();
+	{
+		Exception_throw_ERROR("GetLibraryPath");
+	}
+	PG_END_TRY();
+	END_NATIVE
+	return result;
 }
