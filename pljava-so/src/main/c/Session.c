@@ -47,7 +47,7 @@ Java_org_postgresql_pljava_internal_Session__1setUser(
 	BEGIN_NATIVE_NO_ERRCHECK
 #if 80402<=PG_VERSION_NUM || \
 	80309<=PG_VERSION_NUM && PG_VERSION_NUM<80400 || \
-	80215<=PG_VERSION_NUM && PG_VERSION_NUM<80300
+	80215<=PG_VERSION_NUM && PG_VERSION_NUM<=80300
 	if (InSecurityRestrictedOperation())
 		ereport(ERROR,	(errcode(ERRCODE_INSUFFICIENT_PRIVILEGE), errmsg(
 			"cannot set parameter \"%s\" within security-restricted operation",
