@@ -135,11 +135,7 @@ static Datum coerceScalarObject(UDT self, jobject value)
 		{
 			/* Assign the correct length.
 			 */
-#if PG_VERSION_NUM < 80300
-			VARATT_SIZEP(buffer.data) = buffer.len;
-#else
 			SET_VARSIZE(buffer.data, buffer.len);
-#endif
 		}
 		else if(dataLen != buffer.len)
 		{

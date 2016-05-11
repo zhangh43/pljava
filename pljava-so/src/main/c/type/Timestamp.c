@@ -166,8 +166,6 @@ static int32 Timestamp_getTimeZone(pg_time_t time)
 	 */
 	char const *tzname = PG_GETCONFIGOPTION("timezone");
 	struct pg_tm* tx = pg_localtime(&time, pg_tzset(tzname));
-#elif PG_VERSION_NUM < 80300
-	struct pg_tm* tx = pg_localtime(&time, global_timezone);
 #else
 	struct pg_tm* tx = pg_localtime(&time, session_timezone);
 #endif

@@ -332,8 +332,8 @@ Java_org_postgresql_pljava_internal_LargeObject__1tell(JNIEnv* env, jclass cls, 
 JNIEXPORT void JNICALL Java_org_postgresql_pljava_internal_LargeObject__1truncate
   (JNIEnv *env, jclass cls, jlong _this, jlong pos)
 {
-#if PG_VERSION_NUM < 80300
-	Exception_featureNotSupported("truncate() for large object", "8.3");
+#if PG_VERSION_NUM < 80200
+	Exception_featureNotSupported("truncate() for large object", "8.2");
 #else
 	LargeObjectDesc* self = Invocation_getWrappedPointer(_this);
 	if(self != 0)
