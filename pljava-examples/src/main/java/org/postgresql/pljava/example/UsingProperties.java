@@ -13,6 +13,7 @@ package org.postgresql.pljava.example;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Enumeration;
@@ -49,6 +50,12 @@ public class UsingProperties implements ResultSetProvider, PooledObject {
 		m_pool = pool;
 		m_properties = new Properties();
 
+		URL urlloc = this.getClass().getResource("example.properties");
+		s_logger.info("example.properties location is " + urlloc);
+		Package pack = this.getClass().getPackage();
+		String packageName = pack.getName()+" "+pack.getImplementationTitle() + " " + pack.getImplementationVendor() + " " + pack.getImplementationVersion();
+		s_logger.info("UsingProperties package name: " + packageName );
+
 		s_logger.info("** UsingProperties()");
 		InputStream propStream = this.getClass().getResourceAsStream(
 				"example.properties");
@@ -59,6 +66,13 @@ public class UsingProperties implements ResultSetProvider, PooledObject {
 			propStream.close();
 			s_logger.info("example.properties has " + m_properties.size()
 					+ " entries");
+		}
+		pack = m_properties.getClass().getPackage();
+		packageName = pack.getName()+" "+pack.getImplementationTitle() + " " + pack.getImplementationVendor() + " " + pack.getImplementationVersion();
+		s_logger.info("m_properties package name: " + packageName );
+		if (pack.isSealed())
+		{
+			s_logger.info("package sealed");
 		}
 	}
 
