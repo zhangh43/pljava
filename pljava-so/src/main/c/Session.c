@@ -38,25 +38,12 @@ JNIEXPORT jboolean JNICALL
 Java_org_postgresql_pljava_internal_Session__1setUser(
 	JNIEnv* env, jclass cls, jobject aclId, jboolean isLocalChange)
 {
-	bool wasLocalChange = false;
-	int secContext;
-	Oid dummy;
 	/* No error checking since this might be a restore of user in
 	 * a finally block after an exception.
 	 */
 	BEGIN_NATIVE_NO_ERRCHECK
-	if (InSecurityRestrictedOperation())
-		ereport(ERROR,	(errcode(ERRCODE_INSUFFICIENT_PRIVILEGE), errmsg(
-			"cannot set parameter \"%s\" within security-restricted operation",
-			"role")));
-	GetUserIdAndSecContext(&dummy, &secContext);
-	wasLocalChange = 0 != ( secContext & SECURITY_LOCAL_USERID_CHANGE );
-	if ( isLocalChange )
-		secContext |= SECURITY_LOCAL_USERID_CHANGE;
-	else
-		secContext &= ~SECURITY_LOCAL_USERID_CHANGE;
-	SetUserIdAndSecContext(AclId_getAclId(aclId), secContext);
+	SetUserIdAndContext(AclId_getAclId(aclId), true);
 	END_NATIVE
-	return wasLocalChange ? JNI_TRUE : JNI_FALSE;
+	return JNI_TRUE;
 }
 

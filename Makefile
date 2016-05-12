@@ -22,17 +22,23 @@ PLJAVA_PIVOTAL_VER = 1.4
 PROJDIR = $(shell bash -c pwd)
 
 PGXS = $(shell pg_config --pgxs)
+
+# GPDB Makefile.global messes up JAVA_HOME
+PLJAVA_HOME := $(JAVA_HOME)
 include $(PGXS)
+JAVA_HOME := $(PLJAVA_HOME)
 
 PLJAVADATA = $(DESTDIR)$(datadir)/pljava
 PLJAVALIB  = $(DESTDIR)$(pkglibdir)/java
 
 REGRESS_OPTS = --dbname=pljava_test --create-role=pljava_test
 REGRESS = pljava
+#REGRESS_DIR = $(top_builddir)
+REGRESS_DIR = /gpdb
 
 .DEFAULT_GOAL := build
 
-.PHONY: build clean docs javadoc install uninstall depend release
+.PHONY: build installdirs test
 	
 build:
 	mvn clean install
@@ -63,4 +69,6 @@ test:
 	echo 'host    all      pljava_test   0.0.0.0/0    trust # PLJAVA' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
 	echo 'local   all      pljava_test                trust # PLJAVA' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
 	gpstop -u
-	cd $(PROJDIR)/gpdb/tests && $(top_builddir)/src/test/regress/pg_regress $(REGRESS_OPTS) $(REGRESS)
+	cd $(PROJDIR)/gpdb/tests && $(REGRESS_DIR)/src/test/regress/pg_regress $(REGRESS_OPTS) $(REGRESS)
+
+installcheck: test

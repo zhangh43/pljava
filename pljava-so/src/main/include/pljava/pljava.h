@@ -103,7 +103,7 @@ extern MemoryContext JavaMemoryContext;
 #define _STACK_BASE_RESTORE restore_stack_base(saveStackBasePtr)
 #else
 extern
-#if PG_VERSION_NUM < 80300
+#if PG_VERSION_NUM < 80200
 DLLIMPORT
 #else
 PGDLLIMPORT
