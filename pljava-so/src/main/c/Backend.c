@@ -182,175 +182,6 @@ static char const visualVMprefix[] = "-Dvisualvm.display.name=";
 
 static void initsequencer(enum initstage is, bool tolerant);
 
-#if PG_VERSION_NUM >= 90100
-	static bool check_libjvm_location(
-		char **newval, void **extra, GucSource source);
-	static bool check_vmoptions(
-		char **newval, void **extra, GucSource source);
-	static bool check_classpath(
-		char **newval, void **extra, GucSource source);
-	static bool check_enabled(
-		bool *newval, void **extra, GucSource source);
-
-	/* Check hooks will always allow "setting" a value that is the same as
-	 * current; otherwise, it would be frustrating to have just found settings
-	 * that work, and be unable to save them with ALTER DATABASE SET ... because
-	 * the check hook is called for that too, and would say it is too late....
-	 */
-
-	static bool check_libjvm_location(
-		char **newval, void **extra, GucSource source)
-	{
-		if ( initstage < IS_CAND_JVMOPENED )
-			return true;
-		if ( libjvmlocation == *newval )
-			return true;
-		if ( libjvmlocation && *newval && 0 == strcmp(libjvmlocation, *newval) )
-			return true;
-		GUC_check_errmsg(
-			"too late to change \"pljava.libjvm_location\" setting");
-		GUC_check_errdetail(
-			"Changing the setting can have no effect after "
-			"PL/Java has found and opened the library it points to.");
-		GUC_check_errhint(
-			"To try a different value, exit this session and start a new one.");
-		return false;
-	}
-
-	static bool check_vmoptions(
-		char **newval, void **extra, GucSource source)
-	{
-		if ( initstage < IS_JAVAVM_OPTLIST )
-			return true;
-		if ( vmoptions == *newval )
-			return true;
-		if ( vmoptions && *newval && 0 == strcmp(vmoptions, *newval) )
-			return true;
-		GUC_check_errmsg(
-			"too late to change \"pljava.vmoptions\" setting");
-		GUC_check_errdetail(
-			"Changing the setting can have no effect after "
-			"PL/Java has started the Java virtual machine.");
-		GUC_check_errhint(
-			"To try a different value, exit this session and start a new one.");
-		return false;
-	}
-
-	static bool check_classpath(
-		char **newval, void **extra, GucSource source)
-	{
-		if ( initstage < IS_JAVAVM_OPTLIST )
-			return true;
-		if ( classpath == *newval )
-			return true;
-		if ( classpath && *newval && 0 == strcmp(classpath, *newval) )
-			return true;
-		GUC_check_errmsg(
-			"too late to change \"pljava.classpath\" setting");
-		GUC_check_errdetail(
-			"Changing the setting has no effect after "
-			"PL/Java has started the Java virtual machine.");
-		GUC_check_errhint(
-			"To try a different value, exit this session and start a new one.");
-		return false;
-	}
-
-	static bool check_enabled(
-		bool *newval, void **extra, GucSource source)
-	{
-		if ( initstage < IS_PLJAVA_ENABLED )
-			return true;
-		if ( *newval )
-			return true;
-		GUC_check_errmsg(
-			"too late to change \"pljava.enable\" setting");
-		GUC_check_errdetail(
-			"Start-up has progressed past the point where it is checked.");
-		GUC_check_errhint(
-			"For another chance, exit this session and start a new one.");
-		return false;
-	}
-#endif
-
-#if PG_VERSION_NUM < 90100
-#define ASSIGNHOOK(name,type) \
-	static bool \
-	CppConcat(assign_,name)(type newval, bool doit, GucSource source); \
-	static bool \
-	CppConcat(assign_,name)(type newval, bool doit, GucSource source)
-#define ASSIGNRETURN(thing) return (thing)
-#define ASSIGNRETURNIFCHECK(thing) if (doit) ; else return (thing)
-#define ASSIGNRETURNIFNXACT(thing) \
-	if (pljavaViableXact()) ; else return (thing)
-#define ASSIGNSTRINGHOOK(name) \
-	static const char * \
-	CppConcat(assign_,name)(const char *newval, bool doit, GucSource source); \
-	static const char * \
-	CppConcat(assign_,name)(const char *newval, bool doit, GucSource source)
-#else
-#define ASSIGNHOOK(name,type) \
-	static void \
-	CppConcat(assign_,name)(type newval, void *extra); \
-	static void \
-	CppConcat(assign_,name)(type newval, void *extra)
-#define ASSIGNRETURN(thing)
-#define ASSIGNRETURNIFCHECK(thing)
-#define ASSIGNRETURNIFNXACT(thing) if (pljavaViableXact()) ; else return
-#define ASSIGNSTRINGHOOK(name) ASSIGNHOOK(name, const char *)
-#endif
-
-ASSIGNSTRINGHOOK(libjvm_location)
-{
-	ASSIGNRETURNIFCHECK(newval);
-	libjvmlocation = (char *)newval;
-	if ( IS_FORMLESS_VOID < initstage && initstage < IS_CAND_JVMOPENED )
-	{
-		alteredSettingsWereNeeded = true;
-		ASSIGNRETURNIFNXACT(newval);
-		initsequencer( initstage, true);
-	}
-	ASSIGNRETURN(newval);
-}
-
-ASSIGNSTRINGHOOK(vmoptions)
-{
-	ASSIGNRETURNIFCHECK(newval);
-	vmoptions = (char *)newval;
-	if ( IS_FORMLESS_VOID < initstage && initstage < IS_JAVAVM_OPTLIST )
-	{
-		alteredSettingsWereNeeded = true;
-		ASSIGNRETURNIFNXACT(newval);
-		initsequencer( initstage, true);
-	}
-	ASSIGNRETURN(newval);
-}
-
-ASSIGNSTRINGHOOK(classpath)
-{
-	ASSIGNRETURNIFCHECK(newval);
-	classpath = (char *)newval;
-	if ( IS_FORMLESS_VOID < initstage && initstage < IS_JAVAVM_OPTLIST )
-	{
-		alteredSettingsWereNeeded = true;
-		ASSIGNRETURNIFNXACT(newval);
-		initsequencer( initstage, true);
-	}
-	ASSIGNRETURN(newval);
-}
-
-ASSIGNHOOK(enabled, bool)
-{
-	ASSIGNRETURNIFCHECK(true);
-	pljavaEnabled = newval;
-	if ( IS_FORMLESS_VOID < initstage && initstage < IS_PLJAVA_ENABLED )
-	{
-		alteredSettingsWereNeeded = true;
-		ASSIGNRETURNIFNXACT(true);
-		initsequencer( initstage, true);
-	}
-	ASSIGNRETURN(true);
-}
-
 /*
  * There are a few ways to arrive in the initsequencer.
  * 1. From _PG_init (called exactly once when the library is loaded for ANY
@@ -397,40 +228,17 @@ static void initsequencer(enum initstage is, bool tolerant)
 		initstage = IS_GUCS_REGISTERED;
 
 	case IS_GUCS_REGISTERED:
-		if ( NULL == libjvmlocation )
-		{
-			ereport(WARNING, (
-				errmsg("Java virtual machine not yet loaded"),
-				errdetail("location of libjvm is not configured"),
-				errhint("SET pljava.libjvm_location TO the correct "
-						"path to the jvm library (libjvm.so or jvm.dll, etc.)")));
-			goto check_tolerant;
-		}
-		initstage = IS_CAND_JVMLOCATION;
+		libjvmlocation = strdup("libjvm.so");
 
-	case IS_CAND_JVMLOCATION:
-		if ( ! pljavaEnabled )
-		{
-			ereport(WARNING, (
-				errmsg("Java virtual machine not yet loaded"),
-				errdetail(
-					"Pausing because \"pljava.enable\" is set \"off\". "),
-				errhint(
-					"After changing any other settings as necessary, set it "
-					"\"on\" to proceed.")));
-			goto check_tolerant;
-		}
 		initstage = IS_PLJAVA_ENABLED;
 
 	case IS_PLJAVA_ENABLED:
 		libjvm_handle = pg_dlopen(libjvmlocation);
 		if ( NULL == libjvm_handle )
 		{
-			ereport(WARNING, (
-				errmsg("Java virtual machine not yet loaded"),
-				errdetail("%s", (char *)pg_dlerror()),
-				errhint("SET pljava.libjvm_location TO the correct "
-						"path to the jvm library (libjvm.so or jvm.dll, etc.)")));
+			ereport(ERROR, (
+				errmsg("Cannot load libjvm.so library, check that it is available in LD_LIBRARY_PATH"),
+				errdetail("%s", (char *)pg_dlerror())));
 			goto check_tolerant;
 		}
 		initstage = IS_CAND_JVMOPENED;
@@ -449,11 +257,10 @@ static void initsequencer(enum initstage is, bool tolerant)
 			char *dle = MemoryContextStrdup(ErrorContext, pg_dlerror());
 			pg_dlclose(libjvm_handle);
 			initstage = IS_CAND_JVMLOCATION;
-			ereport(WARNING, (
-				errmsg("Java virtual machine not yet started"),
+			ereport(ERROR, (
+				errmsg("Cannot start Java VM"),
 				errdetail("%s", dle),
-				errhint("Is the file named in \"pljava.libjvm_location\" "
-						"the right one?")));
+				errhint("Check that libjvm.so is available in LD_LIBRARY_PATH")));
 			goto check_tolerant;
 		}
 		initstage = IS_CREATEVM_SYM_FOUND;
@@ -559,7 +366,7 @@ static void initsequencer(enum initstage is, bool tolerant)
 			 */
 			ereport(WARNING, (
 				errmsg("failed to load initial PL/Java classes"),
-				errhint("The most common reason is that \"pljava.classpath\" "
+				errhint("The most common reason is that \"pljava_classpath\" "
 					"needs to be set, naming the proper \"pljava.jar\" file.")
 					));
 			_destroyJavaVM(0, 0);
@@ -971,7 +778,7 @@ static char* getClassPath(const char* prefix)
 	initStringInfo(&buf);
 
 	/* Put the pljava installed in the $libdir first in the path */
-	appendPathParts("$libdir/pljava.jar", &buf, unique, prefix);
+	appendPathParts("$libdir/java/pljava.jar", &buf, unique, prefix);
 
 #if 0
 	/*

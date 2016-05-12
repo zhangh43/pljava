@@ -99,7 +99,8 @@ public class JarLoader extends ClassLoader
 	{
 		/* Protect the namespace */
 		if (name.startsWith("java.") ||
-			name.startsWith("org.postgresql.pljava"))
+			(name.startsWith("org.postgresql.pljava") &&
+			 !name.startsWith("org.postgresql.pljava.example")))
 		{
 			throw new ClassNotFoundException(name);
 		}
