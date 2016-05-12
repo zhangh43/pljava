@@ -104,7 +104,7 @@ public class SPIActions {
 			System.out.print("INFO: ");
 			System.out.println(msg);
 		} else
-			Logger.getAnonymousLogger().info(msg);
+			Logger.getAnonymousLogger().config(msg);
 	}
 
 	public static int maxFromSetReturnExample(int base, int increment)

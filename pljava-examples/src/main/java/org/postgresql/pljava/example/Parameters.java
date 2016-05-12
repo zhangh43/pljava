@@ -86,7 +86,7 @@ public class Parameters {
 			System.out.print("INFO: ");
 			System.out.println(msg);
 		} else
-			Logger.getAnonymousLogger().info(msg);
+			Logger.getAnonymousLogger().config(msg);
 	}
 
 	public static Integer nullOnEven(int value) {
@@ -113,6 +113,12 @@ public class Parameters {
 		}
 		log(buf.toString());
 		return byteArray;
+	}
+
+	public static String print(String value)
+	{
+		log("string " + value);
+		return value;
 	}
 
 	public static void print(Date time) {

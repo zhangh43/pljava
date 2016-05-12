@@ -50,6 +50,7 @@ install: installdirs install-lib
 	$(INSTALL_DATA) '$(PROJDIR)/pljava-examples/target/pljava-examples-$(PLJAVA_VER).jar' '$(PLJAVALIB)/examples.jar'
 	$(INSTALL_DATA) '$(PROJDIR)/gpdb/installation/install.sql'                            '$(PLJAVADATA)'
 	$(INSTALL_DATA) '$(PROJDIR)/gpdb/installation/uninstall.sql'                          '$(PLJAVADATA)'
+	$(INSTALL_DATA) '$(PROJDIR)/gpdb/installation/examples.sql'                           '$(PLJAVADATA)'
 	find $(PROJDIR)/docs -name "*.html" -exec $(INSTALL_DATA) {} '$(PLJAVADATA)/docs' \;
 
 uninstall: uninstall-lib 
