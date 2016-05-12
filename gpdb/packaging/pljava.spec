@@ -9,7 +9,6 @@ AutoReq:        no
 AutoProv:       no
 BuildArch:      %{buildarch} 
 Provides:       pljava = %{pljava_ver}
-Requires:       jre = %{jre_ver}
 
 %description
 The PL/Java package provides Procedural language implementation of Java for Greenplum Database. 

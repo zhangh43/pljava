@@ -8,3 +8,4 @@ pljava-so/pgsql.properties
 pljava-so/target/
 .vagrant/
 target/
+*.so
