@@ -23,11 +23,11 @@ public class AnyTest {
 	private static Logger s_logger = Logger.getAnonymousLogger();
 
 	public static void logAny(Object param) throws SQLException {
-		s_logger.info("logAny received an object of class " + param.getClass());
+		s_logger.config("logAny received an object of class " + param.getClass());
 	}
 
 	public static Object logAnyElement(Object param) throws SQLException {
-		s_logger.info("logAnyElement received an object of class "
+		s_logger.config("logAnyElement received an object of class "
 				+ param.getClass());
 		return param;
 	}

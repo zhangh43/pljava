@@ -45,7 +45,7 @@ public class HugeResultSet implements ResultSetProvider {
 		// Stop when we reach rowCount rows.
 		//
 		if (currentRow >= m_rowCount) {
-			Logger.getAnonymousLogger().info("HugeResultSet ends");
+			Logger.getAnonymousLogger().config("HugeResultSet ends");
 			return false;
 		}
 

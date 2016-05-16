@@ -51,34 +51,34 @@ public class UsingProperties implements ResultSetProvider, PooledObject {
 		m_properties = new Properties();
 
 		URL urlloc = this.getClass().getResource("example.properties");
-		s_logger.info("example.properties location is " + urlloc);
+		s_logger.config("example.properties location is " + urlloc);
 		Package pack = this.getClass().getPackage();
 		String packageName = pack.getName()+" "+pack.getImplementationTitle() + " " + pack.getImplementationVendor() + " " + pack.getImplementationVersion();
-		s_logger.info("UsingProperties package name: " + packageName );
+		s_logger.config("UsingProperties package name: " + packageName );
 
-		s_logger.info("** UsingProperties()");
+		s_logger.config("** UsingProperties()");
 		InputStream propStream = this.getClass().getResourceAsStream(
 				"example.properties");
 		if (propStream == null) {
-			s_logger.info("example.properties was null");
+			s_logger.config("example.properties was null");
 		} else {
 			m_properties.load(propStream);
 			propStream.close();
-			s_logger.info("example.properties has " + m_properties.size()
+			s_logger.config("example.properties has " + m_properties.size()
 					+ " entries");
 		}
 		pack = m_properties.getClass().getPackage();
 		packageName = pack.getName()+" "+pack.getImplementationTitle() + " " + pack.getImplementationVendor() + " " + pack.getImplementationVersion();
-		s_logger.info("m_properties package name: " + packageName );
+		s_logger.config("m_properties package name: " + packageName );
 		if (pack.isSealed())
 		{
-			s_logger.info("package sealed");
+			s_logger.config("package sealed");
 		}
 	}
 
 	@Override
 	public void activate() {
-		s_logger.info("** UsingProperties.activate()");
+		s_logger.config("** UsingProperties.activate()");
 		m_propertyIterator = m_properties.propertyNames();
 	}
 
@@ -103,13 +103,13 @@ public class UsingProperties implements ResultSetProvider, PooledObject {
 
 	@Override
 	public void passivate() {
-		s_logger.info("** UsingProperties.passivate()");
+		s_logger.config("** UsingProperties.passivate()");
 		m_propertyIterator = null;
 	}
 
 	@Override
 	public void remove() {
-		s_logger.info("** UsingProperties.remove()");
+		s_logger.config("** UsingProperties.remove()");
 		m_properties.clear();
 	}
 }

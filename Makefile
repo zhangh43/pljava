@@ -32,7 +32,7 @@ PLJAVADATA = $(DESTDIR)$(datadir)/pljava
 PLJAVALIB  = $(DESTDIR)$(pkglibdir)/java
 
 REGRESS_OPTS = --dbname=pljava_test --create-role=pljava_test
-REGRESS = pljava
+REGRESS = pljava_init pljava_functions pljava_test
 #REGRESS_DIR = $(top_builddir)
 REGRESS_DIR = /gpdb
 

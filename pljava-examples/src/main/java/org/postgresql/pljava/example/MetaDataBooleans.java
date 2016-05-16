@@ -79,10 +79,10 @@ public class MetaDataBooleans implements ResultSetProvider {
 			try {
 				result = (Boolean) m[i].invoke(md, args);
 			} catch (Exception e) {
-				log.info("Method: " + m[i].getName() + " => " + e.getMessage());
+				log.config("Method: " + m[i].getName() + " => " + e.getMessage());
 			} catch (AbstractMethodError e) {
 				// probably a JDBC 4 method that isn't supported yet
-				log.info("Method: " + m[i].getName() + " => " + e.getMessage());
+				log.config("Method: " + m[i].getName() + " => " + e.getMessage());
 			}
 
 			mn.add(m[i].getName());

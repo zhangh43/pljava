@@ -121,12 +121,13 @@ public class Parameters {
 		return value;
 	}
 
-	public static void print(Date time) {
+	public static String print(Date time) {
 		DateFormat p = DateFormat.getDateInstance(DateFormat.FULL);
 		log("Local Date is " + p.format(time));
 		p.setTimeZone(TimeZone.getTimeZone("UTC"));
 		log("UTC Date is " + p.format(time));
 		log("TZ =  " + TimeZone.getDefault().getDisplayName());
+		return p.format(time);
 	}
 
 	public static double print(double value) {
@@ -256,20 +257,22 @@ public class Parameters {
 		return shortArray;
 	}
 
-	public static void print(Time time) {
+	public static String print(Time time) {
 		DateFormat p = new SimpleDateFormat("HH:mm:ss z Z");
 		log("Local Time is " + p.format(time));
 		p.setTimeZone(TimeZone.getTimeZone("UTC"));
 		log("UTC Time is " + p.format(time));
 		log("TZ =  " + TimeZone.getDefault().getDisplayName());
+		return p.format(time);
 	}
 
-	public static void print(Timestamp time) {
+	public static String print(Timestamp time) {
 		DateFormat p = DateFormat.getDateTimeInstance(DateFormat.FULL,
 				DateFormat.FULL);
 		log("Local Timestamp is " + p.format(time));
 		p.setTimeZone(TimeZone.getTimeZone("UTC"));
 		log("UTC Timestamp is " + p.format(time));
 		log("TZ =  " + TimeZone.getDefault().getDisplayName());
+		return p.format(time);
 	}
 }

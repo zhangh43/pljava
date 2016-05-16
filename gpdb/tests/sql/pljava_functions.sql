@@ -1,8 +1,8 @@
-DROP SCHEMA javatest CASCADE;
-CREATE SCHEMA javatest;
+\c pljava_test pljava_test
+
 set search_path = javatest, public;
-set pljava_classpath = 'examples.jar';
-set client_min_messages = "info";
+
+-- org.postgresql.pljava.example.Parameters
 
 CREATE FUNCTION javatest.java_getTimestamp()
 	RETURNS timestamp
@@ -15,22 +15,22 @@ CREATE FUNCTION javatest.java_getTimestamptz()
 	LANGUAGE java;
 
 CREATE FUNCTION javatest.print(date)
-	RETURNS void
+	RETURNS varchar
 	AS 'org.postgresql.pljava.example.Parameters.print'
 	LANGUAGE java;
 
 CREATE FUNCTION javatest.print(timetz)
-	RETURNS void
+	RETURNS varchar
 	AS 'org.postgresql.pljava.example.Parameters.print'
 	LANGUAGE java;
 
 CREATE FUNCTION javatest.print(timestamptz)
-	RETURNS void
+	RETURNS varchar
 	AS 'org.postgresql.pljava.example.Parameters.print'
 	LANGUAGE java;
 
-CREATE FUNCTION javatest.print("char")
-	RETURNS "char"
+CREATE FUNCTION javatest.print(varchar)
+	RETURNS varchar
 	AS 'org.postgresql.pljava.example.Parameters.print'
 	LANGUAGE java;
 
@@ -69,23 +69,23 @@ CREATE FUNCTION javatest.print(int8[])
 	AS 'org.postgresql.pljava.example.Parameters.print'
 	LANGUAGE java;
 
-CREATE FUNCTION javatest.print(real)
-	RETURNS real
+CREATE FUNCTION javatest.print(float4)
+	RETURNS float4
 	AS 'org.postgresql.pljava.example.Parameters.print'
 	LANGUAGE java;
 
-CREATE FUNCTION javatest.print(real[])
-	RETURNS real[]
+CREATE FUNCTION javatest.print(float4[])
+	RETURNS float4[]
 	AS 'org.postgresql.pljava.example.Parameters.print'
 	LANGUAGE java;
 
-CREATE FUNCTION javatest.print(double precision)
-	RETURNS double precision
+CREATE FUNCTION javatest.print(float8)
+	RETURNS float8
 	AS 'org.postgresql.pljava.example.Parameters.print'
 	LANGUAGE java;
 
-CREATE FUNCTION javatest.print(double precision[])
-	RETURNS double precision[]
+CREATE FUNCTION javatest.print(float8[])
+	RETURNS float8[]
 	AS 'org.postgresql.pljava.example.Parameters.print'
 	LANGUAGE java;
 
@@ -104,18 +104,38 @@ CREATE FUNCTION javatest.nullOnEven(int)
 	AS 'org.postgresql.pljava.example.Parameters.nullOnEven'
 	IMMUTABLE LANGUAGE java;
 
+CREATE FUNCTION javatest.addNumbers(int2, int4, int8, numeric, numeric, float4, float8)
+	RETURNS float8
+	AS 'org.postgresql.pljava.example.Parameters.addNumbers'
+	IMMUTABLE LANGUAGE java;
+
+CREATE FUNCTION javatest.countNulls(record)
+	RETURNS int
+	AS 'org.postgresql.pljava.example.Parameters.countNulls'
+	LANGUAGE java;
+
+CREATE FUNCTION javatest.countNulls(int[])
+	RETURNS int
+	AS 'org.postgresql.pljava.example.Parameters.countNulls(java.lang.Integer[])'
+	LANGUAGE java;
+
+-- Functions over system calls
+
 CREATE FUNCTION javatest.java_getSystemProperty(varchar)
 	RETURNS varchar
 	AS 'java.lang.System.getProperty'
 	LANGUAGE java;
 
-/* This function should fail since file system access is
- * prohibited when the language is trusted.
- */
+-- org.postgresql.pljava.example.Security
+
 CREATE FUNCTION javatest.create_temp_file_trusted()
 	RETURNS varchar
 	AS 'org.postgresql.pljava.example.Security.createTempFile'
 	LANGUAGE java;
+
+/* Not executed on top of GPDB due to lack of interest in triggers
+
+-- org.postgresql.pljava.example.Triggers
 
 CREATE TABLE javatest.username_test
 	(
@@ -179,27 +199,9 @@ CREATE TRIGGER mdt_moddatetime
 	BEFORE UPDATE ON mdt
 	FOR EACH ROW
 	EXECUTE PROCEDURE moddatetime (moddate);
+*/
 
-CREATE TABLE javatest.employees1
-	(
-		id		int PRIMARY KEY,
-		name	varchar(200),	
-		salary	int
-	) DISTRIBUTED BY (id);
-
-CREATE TABLE javatest.employees2
-	(
-		id		int PRIMARY KEY,
-		name	varchar(200),
-		salary	int,
-		transferDay date,
-		transferTime time
-	)  DISTRIBUTED BY (id);
-
-CREATE FUNCTION javatest.transferPeople(int)
-	RETURNS int
-	AS 'org.postgresql.pljava.example.SPIActions.transferPeopleWithSalary'
-	LANGUAGE java;
+-- org.postgresql.pljava.example.TupleReturn
 
 CREATE TYPE javatest._testSetReturn
 	AS (base integer, incbase integer, ctime timestamptz);
@@ -224,6 +226,8 @@ CREATE FUNCTION javatest.setReturnExample(int, int)
 	AS 'org.postgresql.pljava.example.TupleReturn.setReturn'
 	IMMUTABLE LANGUAGE java;
 
+-- org.postgresql.pljava.example.HugeResultSet
+
 CREATE FUNCTION javatest.hugeResult(int)
 	RETURNS SETOF javatest._testSetReturn
 	AS 'org.postgresql.pljava.example.HugeResultSet.executeSelect'
@@ -234,15 +238,19 @@ CREATE FUNCTION javatest.hugeNonImmutableResult(int)
 	AS 'org.postgresql.pljava.example.HugeResultSet.executeSelect'
 	LANGUAGE java;
 
-CREATE FUNCTION javatest.maxFromSetReturnExample(int, int)
-	RETURNS int
-	AS 'org.postgresql.pljava.example.SPIActions.maxFromSetReturnExample'
-	IMMUTABLE LANGUAGE java;
+-- org.postgresql.pljava.example.Users
 
-CREATE FUNCTION javatest.nestedStatements(int)
-	RETURNS void
-	AS 'org.postgresql.pljava.example.SPIActions.nestedStatements'
+CREATE FUNCTION javatest.listSupers()
+	RETURNS SETOF pg_user
+	AS 'org.postgresql.pljava.example.Users.listSupers'
 	LANGUAGE java;
+
+CREATE FUNCTION javatest.listNonSupers()
+	RETURNS SETOF pg_user
+	AS 'org.postgresql.pljava.example.Users.listNonSupers'
+	LANGUAGE java;
+
+-- org.postgresql.pljava.example.UsingProperties
 
 CREATE TYPE javatest._properties
 	AS (name varchar(200), value varchar(200));
@@ -251,6 +259,8 @@ CREATE FUNCTION javatest.propertyExample()
 	RETURNS SETOF javatest._properties
 	AS 'org.postgresql.pljava.example.UsingProperties.getProperties'
 	IMMUTABLE LANGUAGE java;
+
+-- org.postgresql.pljava.example.UsingPropertiesAsResultSet
 
 CREATE FUNCTION javatest.resultSetPropertyExample()
 	RETURNS SETOF javatest._properties
@@ -262,19 +272,134 @@ CREATE FUNCTION javatest.scalarPropertyExample()
 	AS 'org.postgresql.pljava.example.UsingPropertiesAsScalarSet.getProperties'
 	IMMUTABLE LANGUAGE java;
 
+-- org.postgresql.pljava.example.RandomInts
+
 CREATE FUNCTION javatest.randomInts(int)
 	RETURNS SETOF int
 	AS 'org.postgresql.pljava.example.RandomInts.createIterator'
 	IMMUTABLE LANGUAGE java;
 
-CREATE FUNCTION javatest.listSupers()
-	RETURNS SETOF pg_user
-	AS 'org.postgresql.pljava.example.Users.listSupers'
+-- org.postgresql.pljava.example.LoggerTest
+
+CREATE FUNCTION javatest.logMessage(varchar, varchar)
+	RETURNS void
+	AS 'org.postgresql.pljava.example.LoggerTest.logMessage'
 	LANGUAGE java;
 
-CREATE FUNCTION javatest.listNonSupers()
-	RETURNS SETOF pg_user
-	AS 'org.postgresql.pljava.example.Users.listNonSupers'
+-- org.postgresql.pljava.example.BinaryColumnTest
+
+CREATE TYPE javatest.BinaryColumnPair
+	AS (col1 bytea, col2 bytea);
+
+CREATE FUNCTION javatest.binaryColumnTest()
+	RETURNS SETOF javatest.BinaryColumnPair
+	AS 'org.postgresql.pljava.example.BinaryColumnTest.getBinaryPairs'
+	IMMUTABLE LANGUAGE java;
+
+-- org.postgresql.pljava.example.MetaDataBooleans
+
+CREATE TYPE javatest.MetaDataBooleans
+	AS (method_name varchar(200), result boolean);
+
+CREATE FUNCTION javatest.getMetaDataBooleans()
+	RETURNS SETOF javatest.MetaDataBooleans
+	AS 'org.postgresql.pljava.example.MetaDataBooleans.getDatabaseMetaDataBooleans'
+	LANGUAGE java;
+
+-- org.postgresql.pljava.example.MetaDataStrings
+
+CREATE TYPE javatest.MetaDataStrings
+	AS (method_name varchar(200), result varchar);
+
+CREATE FUNCTION javatest.getMetaDataStrings()
+	RETURNS SETOF javatest.MetaDataStrings
+	AS 'org.postgresql.pljava.example.MetaDataStrings.getDatabaseMetaDataStrings'
+	LANGUAGE java;
+
+-- org.postgresql.pljava.example.MetaDataInts
+
+CREATE TYPE javatest.MetaDataInts
+	AS (method_name varchar(200), result int);
+
+CREATE FUNCTION javatest.getMetaDataInts()
+	RETURNS SETOF javatest.MetaDataInts
+	AS 'org.postgresql.pljava.example.MetaDataInts.getDatabaseMetaDataInts'
+	LANGUAGE java;
+
+-- org.postgresql.pljava.example.MetaDataTest
+
+CREATE FUNCTION javatest.callMetaDataMethod(varchar)
+	RETURNS SETOF varchar
+	AS 'org.postgresql.pljava.example.MetaDataTest.callMetaDataMethod'
+	LANGUAGE java;
+
+-- org.postgresql.pljava.example.ResultSetTest
+
+CREATE FUNCTION javatest.executeSelect(varchar)
+	RETURNS SETOF VARCHAR
+	AS 'org.postgresql.pljava.example.ResultSetTest.executeSelect'
+	LANGUAGE java;
+
+-- org.postgresql.pljava.example.SetOfRecordTest
+
+CREATE FUNCTION javatest.executeSelectToRecords(varchar)
+	RETURNS SETOF RECORD
+	AS 'org.postgresql.pljava.example.SetOfRecordTest.executeSelect'
+	LANGUAGE java;
+
+-- org.postgresql.pljava.example.AnyTest
+
+CREATE FUNCTION javatest.loganyelement(anyelement)
+	RETURNS anyelement
+	AS 'org.postgresql.pljava.example.AnyTest.logAnyElement'
+	LANGUAGE java IMMUTABLE STRICT;
+
+CREATE FUNCTION javatest.logany("any")
+	RETURNS void
+	AS 'org.postgresql.pljava.example.AnyTest.logAny'
+	LANGUAGE java IMMUTABLE STRICT;
+
+CREATE FUNCTION javatest.makearray(anyelement)
+	RETURNS anyarray
+	AS 'org.postgresql.pljava.example.AnyTest.makeArray'
+	LANGUAGE java IMMUTABLE STRICT;
+
+-- org.postgresql.pljava.example.SPIActions
+
+CREATE TABLE javatest.employees1
+	(
+		id		int,
+		name	varchar(200),	
+		salary	int
+	) DISTRIBUTED BY (id);
+
+CREATE TABLE javatest.employees2
+	(
+		id		int,
+		name	varchar(200),
+		salary	int,
+		transferDay date,
+		transferTime time
+	)  DISTRIBUTED BY (id);
+
+insert into javatest.employees1 values (1, 'Adam', 100);
+insert into javatest.employees1 values (2, 'Brian', 200);
+insert into javatest.employees1 values (3, 'Caleb', 300);
+insert into javatest.employees1 values (4, 'David', 400);
+
+CREATE FUNCTION javatest.transferPeople(int)
+	RETURNS int
+	AS 'org.postgresql.pljava.example.SPIActions.transferPeopleWithSalary'
+	LANGUAGE java;
+
+CREATE FUNCTION javatest.maxFromSetReturnExample(int, int)
+	RETURNS int
+	AS 'org.postgresql.pljava.example.SPIActions.maxFromSetReturnExample'
+	IMMUTABLE LANGUAGE java;
+
+CREATE FUNCTION javatest.nestedStatements(int)
+	RETURNS void
+	AS 'org.postgresql.pljava.example.SPIActions.nestedStatements'
 	LANGUAGE java;
 
 CREATE FUNCTION javatest.testSavepointSanity()
@@ -297,82 +422,8 @@ CREATE FUNCTION javatest.getTimeAsString()
 	AS 'org.postgresql.pljava.example.SPIActions.getTimeAsString'
 	STABLE LANGUAGE java;
 
-CREATE FUNCTION javatest.logMessage(varchar, varchar)
-	RETURNS void
-	AS 'org.postgresql.pljava.example.LoggerTest.logMessage'
-	LANGUAGE java;
+-- Misc for GPDB
 
-CREATE TYPE javatest.BinaryColumnPair
-	AS (col1 bytea, col2 bytea);
-
-CREATE FUNCTION javatest.binaryColumnTest()
-	RETURNS SETOF javatest.BinaryColumnPair
-	AS 'org.postgresql.pljava.example.BinaryColumnTest.getBinaryPairs'
-	IMMUTABLE LANGUAGE java;
-
-CREATE TYPE javatest.MetaDataBooleans
-	AS (method_name varchar(200), result boolean);
-
-CREATE FUNCTION javatest.getMetaDataBooleans()
-	RETURNS SETOF javatest.MetaDataBooleans
-	AS 'org.postgresql.pljava.example.MetaDataBooleans.getDatabaseMetaDataBooleans'
-	LANGUAGE java;
-
-CREATE TYPE javatest.MetaDataStrings
-	AS (method_name varchar(200), result varchar);
-
-CREATE FUNCTION javatest.getMetaDataStrings()
-	RETURNS SETOF javatest.MetaDataStrings
-	AS 'org.postgresql.pljava.example.MetaDataStrings.getDatabaseMetaDataStrings'
-	LANGUAGE java;
-
-CREATE TYPE javatest.MetaDataInts
-	AS (method_name varchar(200), result int);
-
-CREATE FUNCTION javatest.getMetaDataInts()
-	RETURNS SETOF javatest.MetaDataInts
-	AS 'org.postgresql.pljava.example.MetaDataInts.getDatabaseMetaDataInts'
-	LANGUAGE java;
-
-CREATE FUNCTION javatest.callMetaDataMethod(varchar)
-	RETURNS SETOF varchar
-	AS 'org.postgresql.pljava.example.MetaDataTest.callMetaDataMethod'
-	LANGUAGE java;
-
-CREATE FUNCTION javatest.executeSelect(varchar)
-	RETURNS SETOF VARCHAR
-	AS 'org.postgresql.pljava.example.ResultSetTest.executeSelect'
-	LANGUAGE java;
-
-CREATE FUNCTION javatest.executeSelectToRecords(varchar)
-	RETURNS SETOF RECORD
-	AS 'org.postgresql.pljava.example.SetOfRecordTest.executeSelect'
-	LANGUAGE java;
-
-CREATE FUNCTION javatest.countNulls(record)
-	RETURNS int
-	AS 'org.postgresql.pljava.example.Parameters.countNulls'
-	LANGUAGE java;
-
-CREATE FUNCTION javatest.countNulls(int[])
-	RETURNS int
-	AS 'org.postgresql.pljava.example.Parameters.countNulls(java.lang.Integer[])'
-	LANGUAGE java;
-
-/*
- * An example using the ANY type
- */
-CREATE FUNCTION javatest.loganyelement(anyelement)
-	RETURNS anyelement
-	AS 'org.postgresql.pljava.example.AnyTest.logAnyElement'
-	LANGUAGE java IMMUTABLE STRICT;
-
-CREATE FUNCTION javatest.logany("any")
-	RETURNS void
-	AS 'org.postgresql.pljava.example.AnyTest.logAny'
-	LANGUAGE java IMMUTABLE STRICT;
-
-CREATE FUNCTION javatest.makearray(anyelement)
-	RETURNS anyarray
-	AS 'org.postgresql.pljava.example.AnyTest.makeArray'
-	LANGUAGE java IMMUTABLE STRICT;
+CREATE TABLE javatest.test AS
+    SELECT 1 as i
+    distributed by (i);

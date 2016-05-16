@@ -80,11 +80,11 @@ public class MetaDataInts implements ResultSetProvider {
 			try {
 				result = (Integer) m[i].invoke(md, args);
 			} catch (InvocationTargetException e) {
-				log.info("Method: " + m[i].getName() + " => "
+				log.config("Method: " + m[i].getName() + " => "
 						+ e.getTargetException().getMessage());
 				result = new Integer(-1);
 			} catch (Exception e) {
-				log.info("Method: " + m[i].getName() + " => " + e.getMessage());
+				log.config("Method: " + m[i].getName() + " => " + e.getMessage());
 				result = new Integer(-1);
 			}
 
