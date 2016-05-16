@@ -72,3 +72,6 @@ test:
 	cd $(PROJDIR)/gpdb/tests && $(REGRESS_DIR)/src/test/regress/pg_regress $(REGRESS_OPTS) $(REGRESS)
 
 installcheck: test
+
+release:
+	$(MAKE) -C gpdb/packaging

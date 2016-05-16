@@ -9,3 +9,4 @@ pljava-so/target/
 .vagrant/
 target/
 *.so
+*.zip

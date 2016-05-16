@@ -24,7 +24,7 @@ EXTRA_CLEAN+=$(PLJAVA_RPM) $(PLJAVA_GPPKG)
 include gppkg.mk
 
 .PHONY: gppkg
-gppkg:
+gppkg: clean
 	$(MAKE) $(PLJAVA_RPM) RPM_FLAGS=$(PLJAVA_RPM_FLAGS)
 	$(MAKE) $(PLJAVA_GPPKG) MAIN_RPM=$(PLJAVA_RPM)
 

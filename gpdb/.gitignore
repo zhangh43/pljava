@@ -1,3 +1,6 @@
 *.out
 *.out.diff
 *.diffs
+*.rpm
+*.gppkg
+packaging/gppkg_spec.yml
