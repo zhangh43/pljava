@@ -16,8 +16,8 @@
 #-------------------------------------------------------------------------
 
 MODULE_big = pljava
-PLJAVA_VER = 1.5.0
-PLJAVA_PIVOTAL_VER = 1.4
+
+include release.mk
 
 PROJDIR = $(shell bash -c pwd)
 
@@ -42,9 +42,9 @@ REGRESS_DIR = /gpdb
 	
 build:
 	mvn clean install
-	cp $(PROJDIR)/pljava-so/target/nar/pljava-so-$(PLJAVA_VER)-amd64-Linux-gpp-plugin/lib/amd64-Linux-gpp/plugin/libpljava-so-$(PLJAVA_VER).so $(PROJDIR)/$(MODULE_big).so
-	cp $(PROJDIR)/pljava/target/pljava-$(PLJAVA_VER).jar $(PROJDIR)/target/pljava.jar
-	cp $(PROJDIR)/pljava-examples/target/pljava-examples-$(PLJAVA_VER).jar $(PROJDIR)/target/examples.jar
+	cp $(PROJDIR)/pljava-so/target/nar/pljava-so-$(PLJAVA_OSS_VERSION)-amd64-Linux-gpp-plugin/lib/amd64-Linux-gpp/plugin/libpljava-so-$(PLJAVA_OSS_VERSION).so $(PROJDIR)/$(MODULE_big).so
+	cp $(PROJDIR)/pljava/target/pljava-$(PLJAVA_OSS_VERSION).jar $(PROJDIR)/target/pljava.jar
+	cp $(PROJDIR)/pljava-examples/target/pljava-examples-$(PLJAVA_OSS_VERSION).jar $(PROJDIR)/target/examples.jar
 
 installdirs:
 	$(MKDIR_P) '$(PLJAVALIB)'
@@ -52,11 +52,11 @@ installdirs:
 	$(MKDIR_P) '$(PLJAVADATA)/docs'
 
 install: installdirs install-lib
-	$(INSTALL_DATA) '$(PROJDIR)/pljava/target/pljava-$(PLJAVA_VER).jar'                   '$(PLJAVALIB)/pljava.jar'
-	$(INSTALL_DATA) '$(PROJDIR)/pljava-examples/target/pljava-examples-$(PLJAVA_VER).jar' '$(PLJAVALIB)/examples.jar'
-	$(INSTALL_DATA) '$(PROJDIR)/gpdb/installation/install.sql'                            '$(PLJAVADATA)'
-	$(INSTALL_DATA) '$(PROJDIR)/gpdb/installation/uninstall.sql'                          '$(PLJAVADATA)'
-	$(INSTALL_DATA) '$(PROJDIR)/gpdb/installation/examples.sql'                           '$(PLJAVADATA)'
+	$(INSTALL_DATA) '$(PROJDIR)/pljava/target/pljava-$(PLJAVA_OSS_VERSION).jar'                   '$(PLJAVALIB)/pljava.jar'
+	$(INSTALL_DATA) '$(PROJDIR)/pljava-examples/target/pljava-examples-$(PLJAVA_OSS_VERSION).jar' '$(PLJAVALIB)/examples.jar'
+	$(INSTALL_DATA) '$(PROJDIR)/gpdb/installation/install.sql'                                    '$(PLJAVADATA)'
+	$(INSTALL_DATA) '$(PROJDIR)/gpdb/installation/uninstall.sql'                                  '$(PLJAVADATA)'
+	$(INSTALL_DATA) '$(PROJDIR)/gpdb/installation/examples.sql'                                   '$(PLJAVADATA)'
 	find $(PROJDIR)/docs -name "*.html" -exec $(INSTALL_DATA) {} '$(PLJAVADATA)/docs' \;
 
 uninstall: uninstall-lib 
