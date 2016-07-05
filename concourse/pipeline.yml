@@ -319,6 +319,15 @@ resources:
     secret_access_key: {{aws_secret_access_key}}
     regexp: gpdb4off_centos5/pljava-([0-9\.]*).*\.gppkg
 
+- name: tmp_gpdb4git_gphdfs
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: tmp/gphdfs.so
+
 # Timer
 
 - name: gpdb_rebuild_daily
@@ -499,6 +508,7 @@ jobs:
       passed: [pljava_centos7_build]
     - get: pljava_gpdb4off_centos7_build
       passed: [pljava_centos7_build]
+    - get: tmp_gpdb4git_gphdfs
   - aggregate:
     - task: pljava_gpdb4git_test
       file: pljava_src/concourse/pljava_gpdb4git_centos7_test.yml
@@ -526,6 +536,7 @@ jobs:
       passed: [pljava_centos6_build]
     - get: pljava_gpdb4off_centos6_build
       passed: [pljava_centos6_build]
+    - get: tmp_gpdb4git_gphdfs
   - aggregate:
     - task: pljava_gpdb4git_test
       file: pljava_src/concourse/pljava_gpdb4git_centos6_test.yml
@@ -553,6 +564,7 @@ jobs:
       passed: [pljava_centos5_build]
     - get: pljava_gpdb4off_centos5_build
       passed: [pljava_centos5_build]
+    - get: tmp_gpdb4git_gphdfs
   - aggregate:
     - task: pljava_gpdb4git_test
       file: pljava_src/concourse/pljava_gpdb4git_centos5_test.yml
