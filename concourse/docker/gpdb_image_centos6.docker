@@ -19,4 +19,15 @@ RUN wget http://mirror.cc.columbia.edu/pub/software/apache/maven/maven-3/3.3.9/b
     ln -s /usr/local/apache-maven-3.3.9 /usr/local/maven && \
     rm -f apache-maven-3.3.9-bin.tar.gz
 
-ENV PATH=$PATH:/usr/local/maven/bin
+# curl
+RUN cd /tmp && \
+    wget https://github.com/curl/curl/archive/curl-7_49_1.tar.gz && \
+    tar zxvf curl-7_49_1.tar.gz && \
+    cd curl-curl-7_49_1 && \
+    ./buildconf && \
+    ./configure --prefix=/usr/local/curl && \
+    make && \
+    make install
+
+ENV PATH=/usr/local/maven/bin:/usr/local/curl/bin:$PATH
+ENV LD_LIBRARY_PATH=/usr/local/curl/lib:$LD_LIBRARY_PATH
