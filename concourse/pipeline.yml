@@ -1,0 +1,657 @@
+################################################################################
+#################################### GROUPS ####################################
+################################################################################
+
+groups:
+- name: pljava
+  jobs:
+  - gpdb_build
+  - gpdb4_build
+  - pljava_centos5_build
+  - pljava_centos6_build
+  - pljava_centos7_build
+  - pljava_centos5_test
+  - pljava_centos6_test
+  - pljava_centos7_test
+  - pljava_centos5_release
+  - pljava_centos6_release
+  - pljava_centos7_release
+
+################################################################################
+################################## RESOURCES ###################################
+################################################################################
+
+resources:
+
+# Github Source Codes
+
+- name: gpdb4_src
+  type: git
+  source:
+    branch: 4.3_STABLE
+    uri: git@github.com:greenplum-db/gpdb4.git
+    private_key: {{gpdblanguages_private_key}}
+
+- name: gpdb_src
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:greenplum-db/gpdb.git
+    private_key: {{gpdblanguages_private_key}}
+
+- name: pljava_src
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:greenplum-db/pljava.git
+    private_key: {{gpdblanguages_private_key}}
+
+#################################
+########### CentOS 7 ############
+#################################
+
+# GPDB
+
+- name: bin_gpdb_centos7
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb/bin_gpdb_centos7.tar.gz
+
+- name: pljava_gpdb_centos7_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb/pljava-centos7.gppkg
+
+- name: pljava_gpdb_centos7_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb_centos7/pljava-([0-9\.]*).*\.gppkg
+
+# GPDB4git
+
+- name: bin_gpdb4git_centos7
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb4git/bin_gpdb4git_centos7.tar.gz
+
+- name: pljava_gpdb4git_centos7_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb4git/pljava-centos7.gppkg
+
+- name: pljava_gpdb4git_centos7_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb4git_centos7/pljava-([0-9\.]*).*\.gppkg
+
+# GPDB4off
+
+- name: bin_gpdb4off_centos7
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb4off/bin_gpdb4off_centos7.tar.gz
+
+- name: pljava_gpdb4off_centos7_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb4off/pljava-centos7.gppkg
+
+- name: pljava_gpdb4off_centos7_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb4off_centos7/pljava-([0-9\.]*).*\.gppkg
+
+#################################
+########### CentOS 6 ############
+#################################
+
+# GPDB
+
+- name: bin_gpdb_centos6
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb/bin_gpdb_centos6.tar.gz
+
+- name: pljava_gpdb_centos6_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb/pljava-centos6.gppkg
+
+- name: pljava_gpdb_centos6_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb_centos6/pljava-([0-9\.]*).*\.gppkg
+
+# GPDB4git
+
+- name: bin_gpdb4git_centos6
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb4git/bin_gpdb4git_centos6.tar.gz
+
+- name: pljava_gpdb4git_centos6_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb4git/pljava-centos6.gppkg
+
+- name: pljava_gpdb4git_centos6_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb4git_centos6/pljava-([0-9\.]*).*\.gppkg
+
+# GPDB4off
+
+- name: bin_gpdb4off_centos6
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb4off/bin_gpdb4off_centos6.tar.gz
+
+- name: pljava_gpdb4off_centos6_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb4off/pljava-centos6.gppkg
+
+- name: pljava_gpdb4off_centos6_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb4off_centos6/pljava-([0-9\.]*).*\.gppkg
+
+#################################
+########### CentOS 5 ############
+#################################
+
+# GPDB
+
+- name: bin_gpdb_centos5
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb/bin_gpdb_centos5.tar.gz
+
+- name: pljava_gpdb_centos5_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb/pljava-centos5.gppkg
+
+- name: pljava_gpdb_centos5_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb_centos5/pljava-([0-9\.]*).*\.gppkg
+
+# GPDB4git
+
+- name: bin_gpdb4git_centos5
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb4git/bin_gpdb4git_centos5.tar.gz
+
+- name: pljava_gpdb4git_centos5_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb4git/pljava-centos5.gppkg
+
+- name: pljava_gpdb4git_centos5_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb4git_centos5/pljava-([0-9\.]*).*\.gppkg
+
+# GPDB4off
+
+- name: bin_gpdb4off_centos5
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb4off/bin_gpdb4off_centos5.tar.gz
+
+- name: pljava_gpdb4off_centos5_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb4off/pljava-centos5.gppkg
+
+- name: pljava_gpdb4off_centos5_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb4off_centos5/pljava-([0-9\.]*).*\.gppkg
+
+# Timer
+
+- name: gpdb_rebuild_daily
+  type: time
+  source:
+    interval: 24h
+
+################################################################################
+##################################### JOBS #####################################
+################################################################################
+
+jobs:
+
+# Build GPDB4 binaries
+- name: gpdb4_build
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: gpdb4_src
+    - get: pljava_src
+    - get: gpdb_rebuild_daily
+      trigger: true
+  - aggregate:
+    - task: gpdb4_centos5_build
+      file: pljava_src/concourse/gpdb4_centos5_build.yml
+    - task: gpdb4_centos6_build
+      file: pljava_src/concourse/gpdb4_centos6_build.yml
+    - task: gpdb4_centos7_build
+      file: pljava_src/concourse/gpdb4_centos7_build.yml
+  - aggregate:
+    - put: bin_gpdb4git_centos5
+      params:
+        file: gpdb4_centos5_build/bin_gpdb4git_centos5.tar.gz
+    - put: bin_gpdb4git_centos6
+      params:
+        file: gpdb4_centos6_build/bin_gpdb4git_centos6.tar.gz
+    - put: bin_gpdb4git_centos7
+      params:
+        file: gpdb4_centos7_build/bin_gpdb4git_centos7.tar.gz
+
+# Build GPDB binaries
+- name: gpdb_build
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: gpdb_src
+    - get: pljava_src
+    - get: gpdb_rebuild_daily
+      trigger: true
+  - aggregate:
+    - task: gpdb_centos5_build
+      file: pljava_src/concourse/gpdb_centos5_build.yml
+    - task: gpdb_centos6_build
+      file: pljava_src/concourse/gpdb_centos6_build.yml
+    - task: gpdb_centos7_build
+      file: pljava_src/concourse/gpdb_centos7_build.yml
+  - aggregate:
+    - put: bin_gpdb_centos5
+      params:
+        file: gpdb_centos5_build/bin_gpdb_centos5.tar.gz
+    - put: bin_gpdb_centos6
+      params:
+        file: gpdb_centos6_build/bin_gpdb_centos6.tar.gz
+    - put: bin_gpdb_centos7
+      params:
+        file: gpdb_centos7_build/bin_gpdb_centos7.tar.gz
+
+# Build PL/Java GP Package
+
+- name: pljava_centos7_build
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      trigger: true
+    - get: bin_gpdb_centos7
+      trigger: true
+    - get: bin_gpdb4git_centos7
+      trigger: true
+    - get: bin_gpdb4off_centos7
+      trigger: true
+  - aggregate:
+    - task: pljava_gpdb4git_build
+      file: pljava_src/concourse/pljava_gpdb4git_centos7_build.yml
+    - task: pljava_gpdb4off_build
+      file: pljava_src/concourse/pljava_gpdb4off_centos7_build.yml
+    - task: pljava_gpdb_build
+      file: pljava_src/concourse/pljava_gpdb_centos7_build.yml
+  - aggregate:
+    - put: pljava_gpdb4git_centos7_build
+      params:
+        file: pljava_gpdb4git_build/pljava-centos7.gppkg
+    - put: pljava_gpdb4off_centos7_build
+      params:
+        file: pljava_gpdb4off_build/pljava-centos7.gppkg
+    - put: pljava_gpdb_centos7_build
+      params:
+        file: pljava_gpdb_build/pljava-centos7.gppkg
+
+- name: pljava_centos6_build
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      trigger: true
+    - get: bin_gpdb_centos6
+      trigger: true
+    - get: bin_gpdb4git_centos6
+      trigger: true
+    - get: bin_gpdb4off_centos6
+      trigger: true
+  - aggregate:
+    - task: pljava_gpdb4git_build
+      file: pljava_src/concourse/pljava_gpdb4git_centos6_build.yml
+    - task: pljava_gpdb4off_build
+      file: pljava_src/concourse/pljava_gpdb4off_centos6_build.yml
+    - task: pljava_gpdb_build
+      file: pljava_src/concourse/pljava_gpdb_centos6_build.yml
+  - aggregate:
+    - put: pljava_gpdb4git_centos6_build
+      params:
+        file: pljava_gpdb4git_build/pljava-centos6.gppkg
+    - put: pljava_gpdb4off_centos6_build
+      params:
+        file: pljava_gpdb4off_build/pljava-centos6.gppkg
+    - put: pljava_gpdb_centos6_build
+      params:
+        file: pljava_gpdb_build/pljava-centos6.gppkg
+
+- name: pljava_centos5_build
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      trigger: true
+    - get: bin_gpdb_centos5
+      trigger: true
+    - get: bin_gpdb4git_centos5
+      trigger: true
+    - get: bin_gpdb4off_centos5
+      trigger: true
+  - aggregate:
+    - task: pljava_gpdb4git_build
+      file: pljava_src/concourse/pljava_gpdb4git_centos5_build.yml
+    - task: pljava_gpdb4off_build
+      file: pljava_src/concourse/pljava_gpdb4off_centos5_build.yml
+    - task: pljava_gpdb_build
+      file: pljava_src/concourse/pljava_gpdb_centos5_build.yml
+  - aggregate:
+    - put: pljava_gpdb4git_centos5_build
+      params:
+        file: pljava_gpdb4git_build/pljava-centos5.gppkg
+    - put: pljava_gpdb4off_centos5_build
+      params:
+        file: pljava_gpdb4off_build/pljava-centos5.gppkg
+    - put: pljava_gpdb_centos5_build
+      params:
+        file: pljava_gpdb_build/pljava-centos5.gppkg
+
+# Test PL/Java GP Package
+
+- name: pljava_centos7_test
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_centos7_build]
+      trigger: true
+    - get: bin_gpdb_centos7
+      passed: [pljava_centos7_build]
+    - get: bin_gpdb4git_centos7
+      passed: [pljava_centos7_build]
+    - get: bin_gpdb4off_centos7
+      passed: [pljava_centos7_build]
+    - get: pljava_gpdb_centos7_build
+      passed: [pljava_centos7_build]
+    - get: pljava_gpdb4git_centos7_build
+      passed: [pljava_centos7_build]
+    - get: pljava_gpdb4off_centos7_build
+      passed: [pljava_centos7_build]
+  - aggregate:
+    - task: pljava_gpdb4git_test
+      file: pljava_src/concourse/pljava_gpdb4git_centos7_test.yml
+    - task: pljava_gpdb4off_test
+      file: pljava_src/concourse/pljava_gpdb4off_centos7_test.yml
+    - task: pljava_gpdb_test
+      file: pljava_src/concourse/pljava_gpdb_centos7_test.yml
+
+- name: pljava_centos6_test
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_centos6_build]
+      trigger: true
+    - get: bin_gpdb_centos6
+      passed: [pljava_centos6_build]
+    - get: bin_gpdb4git_centos6
+      passed: [pljava_centos6_build]
+    - get: bin_gpdb4off_centos6
+      passed: [pljava_centos6_build]
+    - get: pljava_gpdb_centos6_build
+      passed: [pljava_centos6_build]
+    - get: pljava_gpdb4git_centos6_build
+      passed: [pljava_centos6_build]
+    - get: pljava_gpdb4off_centos6_build
+      passed: [pljava_centos6_build]
+  - aggregate:
+    - task: pljava_gpdb4git_test
+      file: pljava_src/concourse/pljava_gpdb4git_centos6_test.yml
+    - task: pljava_gpdb4off_test
+      file: pljava_src/concourse/pljava_gpdb4off_centos6_test.yml
+    - task: pljava_gpdb_test
+      file: pljava_src/concourse/pljava_gpdb_centos6_test.yml
+
+- name: pljava_centos5_test
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_centos5_build]
+      trigger: true
+    - get: bin_gpdb_centos5
+      passed: [pljava_centos5_build]
+    - get: bin_gpdb4git_centos5
+      passed: [pljava_centos5_build]
+    - get: bin_gpdb4off_centos5
+      passed: [pljava_centos5_build]
+    - get: pljava_gpdb_centos5_build
+      passed: [pljava_centos5_build]
+    - get: pljava_gpdb4git_centos5_build
+      passed: [pljava_centos5_build]
+    - get: pljava_gpdb4off_centos5_build
+      passed: [pljava_centos5_build]
+  - aggregate:
+    - task: pljava_gpdb4git_test
+      file: pljava_src/concourse/pljava_gpdb4git_centos5_test.yml
+    - task: pljava_gpdb4off_test
+      file: pljava_src/concourse/pljava_gpdb4off_centos5_test.yml
+    - task: pljava_gpdb_test
+      file: pljava_src/concourse/pljava_gpdb_centos5_test.yml
+
+# Release PL/Java GP Package
+
+- name: pljava_centos7_release
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_centos7_test]
+      trigger: true
+    - get: bin_gpdb_centos7
+      passed: [pljava_centos7_test]
+    - get: bin_gpdb4git_centos7
+      passed: [pljava_centos7_test]
+    - get: bin_gpdb4off_centos7
+      passed: [pljava_centos7_test]
+  - aggregate:
+    - task: pljava_gpdb4git_release
+      file: pljava_src/concourse/pljava_gpdb4git_centos7_release.yml
+    - task: pljava_gpdb4off_release
+      file: pljava_src/concourse/pljava_gpdb4off_centos7_release.yml
+    - task: pljava_gpdb_release
+      file: pljava_src/concourse/pljava_gpdb_centos7_release.yml
+  - aggregate:
+    - put: pljava_gpdb4git_centos7_release
+      params:
+        file: pljava_gpdb4git_release/pljava-*.gppkg
+    - put: pljava_gpdb4off_centos7_release
+      params:
+        file: pljava_gpdb4off_release/pljava-*.gppkg
+    - put: pljava_gpdb_centos7_release
+      params:
+        file: pljava_gpdb_release/pljava-*.gppkg
+
+- name: pljava_centos6_release
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_centos6_test]
+      trigger: true
+    - get: bin_gpdb_centos6
+      passed: [pljava_centos6_test]
+    - get: bin_gpdb4git_centos6
+      passed: [pljava_centos6_test]
+    - get: bin_gpdb4off_centos6
+      passed: [pljava_centos6_test]
+  - aggregate:
+    - task: pljava_gpdb4git_release
+      file: pljava_src/concourse/pljava_gpdb4git_centos6_release.yml
+    - task: pljava_gpdb4off_release
+      file: pljava_src/concourse/pljava_gpdb4off_centos6_release.yml
+    - task: pljava_gpdb_release
+      file: pljava_src/concourse/pljava_gpdb_centos6_release.yml
+  - aggregate:
+    - put: pljava_gpdb4git_centos6_release
+      params:
+        file: pljava_gpdb4git_release/pljava-*.gppkg
+    - put: pljava_gpdb4off_centos6_release
+      params:
+        file: pljava_gpdb4off_release/pljava-*.gppkg
+    - put: pljava_gpdb_centos6_release
+      params:
+        file: pljava_gpdb_release/pljava-*.gppkg
+
+- name: pljava_centos5_release
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_centos5_test]
+      trigger: true
+    - get: bin_gpdb_centos5
+      passed: [pljava_centos5_test]
+    - get: bin_gpdb4git_centos5
+      passed: [pljava_centos5_test]
+    - get: bin_gpdb4off_centos5
+      passed: [pljava_centos5_test]
+  - aggregate:
+    - task: pljava_gpdb4git_release
+      file: pljava_src/concourse/pljava_gpdb4git_centos5_release.yml
+    - task: pljava_gpdb4off_release
+      file: pljava_src/concourse/pljava_gpdb4off_centos5_release.yml
+    - task: pljava_gpdb_release
+      file: pljava_src/concourse/pljava_gpdb_centos5_release.yml
+  - aggregate:
+    - put: pljava_gpdb4git_centos5_release
+      params:
+        file: pljava_gpdb4git_release/pljava-*.gppkg
+    - put: pljava_gpdb4off_centos5_release
+      params:
+        file: pljava_gpdb4off_release/pljava-*.gppkg
+    - put: pljava_gpdb_centos5_release
+      params:
+        file: pljava_gpdb_release/pljava-*.gppkg
