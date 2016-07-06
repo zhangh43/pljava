@@ -16,6 +16,6 @@ make || exit 1
 make install || exit 1
 cd ..
 pushd /usr/local
-tar -zcvf bin_gpdb_centos7.tar.gz greenplum-db
+tar -zcvf bin_gpdb_$1.tar.gz greenplum-db
 popd
-mv /usr/local/bin_gpdb_centos7.tar.gz gpdb_build/
+mv /usr/local/bin_gpdb_$1.tar.gz gpdb_build/

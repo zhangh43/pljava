@@ -360,13 +360,13 @@ jobs:
   - aggregate:
     - put: bin_gpdb4git_centos5
       params:
-        file: gpdb4_centos5_build/bin_gpdb4git_centos5.tar.gz
+        file: gpdb4_build/bin_gpdb4git_centos5.tar.gz
     - put: bin_gpdb4git_centos6
       params:
-        file: gpdb4_centos6_build/bin_gpdb4git_centos6.tar.gz
+        file: gpdb4_build/bin_gpdb4git_centos6.tar.gz
     - put: bin_gpdb4git_centos7
       params:
-        file: gpdb4_centos7_build/bin_gpdb4git_centos7.tar.gz
+        file: gpdb4_build/bin_gpdb4git_centos7.tar.gz
 
 # Build GPDB binaries
 - name: gpdb_build
@@ -387,13 +387,13 @@ jobs:
   - aggregate:
     - put: bin_gpdb_centos5
       params:
-        file: gpdb_centos5_build/bin_gpdb_centos5.tar.gz
+        file: gpdb_build/bin_gpdb_centos5.tar.gz
     - put: bin_gpdb_centos6
       params:
-        file: gpdb_centos6_build/bin_gpdb_centos6.tar.gz
+        file: gpdb_build/bin_gpdb_centos6.tar.gz
     - put: bin_gpdb_centos7
       params:
-        file: gpdb_centos7_build/bin_gpdb_centos7.tar.gz
+        file: gpdb_build/bin_gpdb_centos7.tar.gz
 
 # Build PL/Java GP Package
 

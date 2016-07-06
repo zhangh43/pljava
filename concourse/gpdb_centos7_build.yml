@@ -16,3 +16,5 @@ outputs:
 
 run:
   path: pljava_src/concourse/scripts/gpdb_build.sh
+  args:
+    - centos7
