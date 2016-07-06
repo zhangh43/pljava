@@ -18,4 +18,4 @@ cd ..
 pushd /usr/local
 tar -zcvf bin_gpdb4git_$1.tar.gz greenplum-db
 popd
-mv /usr/local/bin_gpdb4git_$1.tar.gz gpdb4_build/
+mv /usr/local/bin_gpdb4git_$1.tar.gz gpdb4_$1_build/
