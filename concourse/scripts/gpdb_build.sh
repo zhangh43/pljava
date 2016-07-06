@@ -2,6 +2,12 @@
 
 set -x
 
+if [ "$1" == "centos5" ]; then
+    export CC=gcc44
+    export PYTHON=/usr/bin/python26
+    rm -f /usr/bin/python && ln -s /usr/bin/python26 /usr/bin/python
+fi
+
 mkdir /usr/local/greenplum-db
 export BLD_ARCH=rhel5_x86_64
 cd gpdb_src
