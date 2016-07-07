@@ -37,7 +37,7 @@ REGRESS_DIR = $(top_builddir)
 
 .DEFAULT_GOAL := build
 
-.PHONY: build installdirs test
+.PHONY: build installdirs install uninstall test localconfig targetconfig installcheck targetcheck release
 	
 build:
 	mvn clean install
@@ -62,7 +62,7 @@ uninstall: uninstall-lib
 	rm -rf '$(PLJAVALIB)'
 	rm -rf '$(PLJAVADATA)'
 	
-installcheck:
+test:
 	sed -i '/.* # PLJAVA.*/d' $(MASTER_DATA_DIRECTORY)/pg_hba.conf
 	echo 'host    all      pljava_test   0.0.0.0/0    trust # PLJAVA' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
 	echo 'local   all      pljava_test                trust # PLJAVA' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
@@ -72,7 +72,12 @@ installcheck:
 localconfig:
 	gpconfig -c pljava_classpath -v \'$(PROJDIR)/target/\'
 
-test: localconfig installcheck
+targetconfig:
+	gpconfig -c pljava_classpath -v '.'
+
+installcheck: localconfig test
+
+targetcheck: targetconfig test
 
 release:
 	$(MAKE) -C gpdb/packaging

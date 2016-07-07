@@ -14,3 +14,4 @@ RUN yum -y install openssh-server net-tools iproute
 RUN yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel maven
 
 RUN yum -y install which
+RUN echo /usr/lib/jvm/jre/lib/amd64/server/ > /etc/ld.so.conf.d/jvm.conf && ldconfig

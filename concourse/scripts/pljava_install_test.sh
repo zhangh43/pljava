@@ -18,4 +18,4 @@ rm -rf $TMPDIR
 cp -r pljava_src $TMPDIR
 cd $TMPDIR
 
-make installcheck || exit 1
+make targetcheck || exit 1

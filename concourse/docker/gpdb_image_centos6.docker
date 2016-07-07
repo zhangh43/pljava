@@ -29,5 +29,7 @@ RUN cd /tmp && \
     make && \
     make install
 
+RUN echo /usr/lib/jvm/jre/lib/amd64/server/ > /etc/ld.so.conf.d/jvm.conf && ldconfig
+
 ENV PATH=/usr/local/maven/bin:/usr/local/curl/bin:$PATH
 ENV LD_LIBRARY_PATH=/usr/local/curl/lib:$LD_LIBRARY_PATH
