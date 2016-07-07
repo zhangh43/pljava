@@ -158,7 +158,7 @@ select * from javatest.getMetaDataInts() where method_name in ('getMaxRowSize', 
 
 -- org.postgresql.pljava.example.MetaDataTest
 
-select * from javatest.callMetaDataMethod('getSchemas()');
+select 'public;' in (select javatest.callMetaDataMethod('getSchemas()')) as q;
 
 -- org.postgresql.pljava.example.ResultSetTest
 
@@ -188,5 +188,5 @@ select javatest.maxFromSetReturnExample(2,10);
 select javatest.nestedStatements(5);
 select javatest.testSavepointSanity();
 select javatest.testTransactionRecovery();
-select current_date - javatest.getDateAsString()::date;
-select current_time - javatest.getTimeAsString()::time < interval '5 minutes';
+select javatest.getDateAsString()::date is not null;
+select javatest.getTimeAsString()::time is not null;
