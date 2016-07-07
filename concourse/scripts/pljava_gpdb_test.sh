@@ -52,6 +52,4 @@ else
     echo "PL/Java test succeeded"
 fi
 
-stop_docker || exit 1
-
 exit $RETCODE
