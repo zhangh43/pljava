@@ -12,3 +12,5 @@ RUN pip install psi lockfile paramiko setuptools epydoc psutil
 # Install runtime dependencies
 RUN yum -y install openssh-server net-tools iproute
 RUN yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel maven
+
+RUN yum -y install which

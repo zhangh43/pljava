@@ -36,20 +36,20 @@ runuser gpadmin -c "bash /tmp/pljava_install_test.sh $PLJAVABIN $OSVER $WORKDIR 
 RETCODE=$?
 
 if [ $RETCODE -ne 0 ]; then
-    echo "PL/Container test failed"
+    echo "PL/Java test failed"
     echo "====================================================================="
     echo "========================= REGRESSION DIFFS =========================="
     echo "====================================================================="
-    cat $TMPDIR/tests/regression.out
-    cat $TMPDIR/tests/regression.diffs
+    cat $TMPDIR/gpdb/tests/regression.out
+    cat $TMPDIR/gpdb/tests/regression.diffs
     echo "====================================================================="
     echo "============================== RESULTS =============================="
     echo "====================================================================="
-    cat $TMPDIR/tests/results/plcontainer_test_python.out
-    cat $TMPDIR/tests/results/plcontainer_test_anaconda.out
-    cat $TMPDIR/tests/results/plcontainer_test_r.out
+    cat $TMPDIR/gpdb/tests/results/pljava_init.out
+    cat $TMPDIR/gpdb/tests/results/pljava_functions.out
+    cat $TMPDIR/gpdb/tests/results/pljava_test.out
 else
-    echo "PL/Container test succeeded"
+    echo "PL/Java test succeeded"
 fi
 
 stop_docker || exit 1
