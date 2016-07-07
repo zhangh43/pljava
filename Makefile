@@ -33,8 +33,7 @@ PLJAVALIB  = $(DESTDIR)$(pkglibdir)/java
 
 REGRESS_OPTS = --dbname=pljava_test --create-role=pljava_test
 REGRESS = pljava_init pljava_functions pljava_test
-#REGRESS_DIR = $(top_builddir)
-REGRESS_DIR = /gpdb
+REGRESS_DIR = $(top_builddir)
 
 .DEFAULT_GOAL := build
 
@@ -63,15 +62,17 @@ uninstall: uninstall-lib
 	rm -rf '$(PLJAVALIB)'
 	rm -rf '$(PLJAVADATA)'
 	
-test:
-	gpconfig -c pljava_classpath -v \'$(PROJDIR)/target/\'
+installcheck:
 	sed -i '/.* # PLJAVA.*/d' $(MASTER_DATA_DIRECTORY)/pg_hba.conf
 	echo 'host    all      pljava_test   0.0.0.0/0    trust # PLJAVA' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
 	echo 'local   all      pljava_test                trust # PLJAVA' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
 	gpstop -u
 	cd $(PROJDIR)/gpdb/tests && $(REGRESS_DIR)/src/test/regress/pg_regress $(REGRESS_OPTS) $(REGRESS)
 
-installcheck: test
+localconfig:
+	gpconfig -c pljava_classpath -v \'$(PROJDIR)/target/\'
+
+test: localconfig installcheck
 
 release:
 	$(MAKE) -C gpdb/packaging
