@@ -77,7 +77,7 @@ resources:
     region_name: {{aws_region_name}}
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
-    regexp: gpdb_centos7/pljava-([0-9\.]*).*\.gppkg
+    regexp: gpdb_centos7/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
 # GPDB4git
 
@@ -106,7 +106,7 @@ resources:
     region_name: {{aws_region_name}}
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
-    regexp: gpdb4git_centos7/pljava-([0-9\.]*).*\.gppkg
+    regexp: gpdb4git_centos7/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
 # GPDB4off
 
@@ -135,7 +135,7 @@ resources:
     region_name: {{aws_region_name}}
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
-    regexp: gpdb4off_centos7/pljava-([0-9\.]*).*\.gppkg
+    regexp: gpdb4off_centos7/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
 #################################
 ########### CentOS 6 ############
@@ -168,7 +168,7 @@ resources:
     region_name: {{aws_region_name}}
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
-    regexp: gpdb_centos6/pljava-([0-9\.]*).*\.gppkg
+    regexp: gpdb_centos6/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
 # GPDB4git
 
@@ -197,7 +197,7 @@ resources:
     region_name: {{aws_region_name}}
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
-    regexp: gpdb4git_centos6/pljava-([0-9\.]*).*\.gppkg
+    regexp: gpdb4git_centos6/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
 # GPDB4off
 
@@ -226,7 +226,7 @@ resources:
     region_name: {{aws_region_name}}
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
-    regexp: gpdb4off_centos6/pljava-([0-9\.]*).*\.gppkg
+    regexp: gpdb4off_centos6/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
 #################################
 ########### CentOS 5 ############
@@ -259,7 +259,7 @@ resources:
     region_name: {{aws_region_name}}
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
-    regexp: gpdb_centos5/pljava-([0-9\.]*).*\.gppkg
+    regexp: gpdb_centos5/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
 # GPDB4git
 
@@ -288,7 +288,7 @@ resources:
     region_name: {{aws_region_name}}
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
-    regexp: gpdb4git_centos5/pljava-([0-9\.]*).*\.gppkg
+    regexp: gpdb4git_centos5/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
 # GPDB4off
 
@@ -317,7 +317,7 @@ resources:
     region_name: {{aws_region_name}}
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
-    regexp: gpdb4off_centos5/pljava-([0-9\.]*).*\.gppkg
+    regexp: gpdb4off_centos5/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
 - name: tmp_gpdb4git_gphdfs
   type: s3
@@ -449,13 +449,13 @@ jobs:
   - aggregate:
     - put: pljava_gpdb4git_centos6_build
       params:
-        file: pljava_gpdb4git_build/pljava-centos6.gppkg
+        file: pljava_gpdb4git_centos6_build/pljava-centos6.gppkg
     - put: pljava_gpdb4off_centos6_build
       params:
-        file: pljava_gpdb4off_build/pljava-centos6.gppkg
+        file: pljava_gpdb4off_centos6_build/pljava-centos6.gppkg
     - put: pljava_gpdb_centos6_build
       params:
-        file: pljava_gpdb_build/pljava-centos6.gppkg
+        file: pljava_gpdb_centos6_build/pljava-centos6.gppkg
 
 - name: pljava_centos5_build
   max_in_flight: 3
@@ -479,13 +479,13 @@ jobs:
   - aggregate:
     - put: pljava_gpdb4git_centos5_build
       params:
-        file: pljava_gpdb4git_build/pljava-centos5.gppkg
+        file: pljava_gpdb4git_centos5_build/pljava-centos5.gppkg
     - put: pljava_gpdb4off_centos5_build
       params:
-        file: pljava_gpdb4off_build/pljava-centos5.gppkg
+        file: pljava_gpdb4off_centos5_build/pljava-centos5.gppkg
     - put: pljava_gpdb_centos5_build
       params:
-        file: pljava_gpdb_build/pljava-centos5.gppkg
+        file: pljava_gpdb_centos5_build/pljava-centos5.gppkg
 
 # Test PL/Java GP Package
 
@@ -598,13 +598,13 @@ jobs:
   - aggregate:
     - put: pljava_gpdb4git_centos7_release
       params:
-        file: pljava_gpdb4git_release/pljava-*.gppkg
+        file: pljava_gpdb4git_centos7_release/pljava-*.gppkg
     - put: pljava_gpdb4off_centos7_release
       params:
-        file: pljava_gpdb4off_release/pljava-*.gppkg
+        file: pljava_gpdb4off_centos7_release/pljava-*.gppkg
     - put: pljava_gpdb_centos7_release
       params:
-        file: pljava_gpdb_release/pljava-*.gppkg
+        file: pljava_gpdb_centos7_release/pljava-*.gppkg
 
 - name: pljava_centos6_release
   max_in_flight: 3
@@ -629,13 +629,13 @@ jobs:
   - aggregate:
     - put: pljava_gpdb4git_centos6_release
       params:
-        file: pljava_gpdb4git_release/pljava-*.gppkg
+        file: pljava_gpdb4git_centos6_release/pljava-*.gppkg
     - put: pljava_gpdb4off_centos6_release
       params:
-        file: pljava_gpdb4off_release/pljava-*.gppkg
+        file: pljava_gpdb4off_centos6_release/pljava-*.gppkg
     - put: pljava_gpdb_centos6_release
       params:
-        file: pljava_gpdb_release/pljava-*.gppkg
+        file: pljava_gpdb_centos6_release/pljava-*.gppkg
 
 - name: pljava_centos5_release
   max_in_flight: 3
@@ -660,10 +660,10 @@ jobs:
   - aggregate:
     - put: pljava_gpdb4git_centos5_release
       params:
-        file: pljava_gpdb4git_release/pljava-*.gppkg
+        file: pljava_gpdb4git_centos5_release/pljava-*.gppkg
     - put: pljava_gpdb4off_centos5_release
       params:
-        file: pljava_gpdb4off_release/pljava-*.gppkg
+        file: pljava_gpdb4off_centos5_release/pljava-*.gppkg
     - put: pljava_gpdb_centos5_release
       params:
-        file: pljava_gpdb_release/pljava-*.gppkg
+        file: pljava_gpdb_centos5_release/pljava-*.gppkg
