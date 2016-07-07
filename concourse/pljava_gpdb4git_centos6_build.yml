@@ -1,0 +1,21 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: agrishchenko/pljava_centos6_ci
+    tag: 'latest'
+
+inputs:
+  - name: bin_gpdb4git_centos6
+  - name: pljava_src
+
+outputs:
+  - name: pljava_gpdb4git_centos6_build
+
+run:
+  path: pljava_src/concourse/scripts/pljava_gpdb_build.sh
+  args:
+    - bin_gpdb4git_centos6
+    - pljava_gpdb4git_centos6_build
+    - centos6
