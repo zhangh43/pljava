@@ -419,13 +419,13 @@ jobs:
   - aggregate:
     - put: pljava_gpdb4git_centos7_build
       params:
-        file: pljava_gpdb4git_build/pljava-centos7.gppkg
+        file: pljava_gpdb4git_centos7_build/pljava-centos7.gppkg
     - put: pljava_gpdb4off_centos7_build
       params:
-        file: pljava_gpdb4off_build/pljava-centos7.gppkg
+        file: pljava_gpdb4off_centos7_build/pljava-centos7.gppkg
     - put: pljava_gpdb_centos7_build
       params:
-        file: pljava_gpdb_build/pljava-centos7.gppkg
+        file: pljava_gpdb_centos7_build/pljava-centos7.gppkg
 
 - name: pljava_centos6_build
   max_in_flight: 3
