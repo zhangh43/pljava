@@ -11,7 +11,9 @@
  */
 package org.postgresql.pljava.example;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -28,9 +30,23 @@ public class Security {
 	 */
 	public static String createTempFile() throws SQLException {
 		try {
-			File tmp = File.createTempFile("pljava", ".test");
-			tmp.deleteOnExit();
-			return tmp.getAbsolutePath();
+			// create new file
+			String content = "PL/Java File Creation Test";
+			String path = "/tmp/pljava_temp.txt";
+			File file = new File(path);
+
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			// write to file
+			bw.write(content);
+			// close file
+			bw.close();
+			return "File Created";
 		} catch (IOException e) {
 			throw new SQLException(e.getMessage());
 		}

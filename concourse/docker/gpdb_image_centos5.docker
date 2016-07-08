@@ -52,7 +52,9 @@ RUN cd /tmp && \
     rm flex-2.5.35.tar.gz && \
     rm -rf flex-flex-2-5-35
 
-RUN echo /usr/lib/jvm/jre/lib/amd64/server/ > /etc/ld.so.conf.d/jvm.conf && ldconfig
+RUN echo /usr/lib/jvm/jre/lib/amd64/server/ >> /etc/ld.so.conf.d/gpdb.conf && \
+    echo /usr/local/curl/lib/               >> /etc/ld.so.conf.d/gpdb.conf && \
+    ldconfig
 
 ENV PATH=/usr/local/flex/bin:/usr/local/maven/bin:/usr/local/curl/bin:$PATH
 ENV LD_LIBRARY_PATH=/usr/local/curl/lib:$LD_LIBRARY_PATH
