@@ -7,6 +7,10 @@ GPDBBIN=$1
 OUTPUT=$2
 OSVER=$3
 
+if [ "$OSVER" == "centos5" ]; then
+    rm -f /usr/bin/python && ln -s /usr/bin/python26 /usr/bin/python
+fi
+
 cp $GPDBBIN/$GPDBBIN.tar.gz /usr/local
 pushd /usr/local
 tar zxvf $GPDBBIN.tar.gz

@@ -10,6 +10,10 @@ OSVER=$3
 GPHDFS=$4
 TMPDIR=/tmp/localplccopy
 
+if [ "$OSVER" == "centos5" ]; then
+    rm -f /usr/bin/python && ln -s /usr/bin/python26 /usr/bin/python
+fi
+
 # Put GPDB binaries in place to get pg_config
 cp $GPDBBIN/$GPDBBIN.tar.gz /usr/local
 pushd /usr/local
