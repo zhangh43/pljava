@@ -18,3 +18,4 @@ run:
   args:
     - bin_gpdb_centos7
     - pljava_gpdb_centos7_release
+    - centos7

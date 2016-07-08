@@ -18,3 +18,4 @@ run:
   args:
     - bin_gpdb4git_centos6
     - pljava_gpdb4git_centos6_release
+    - centos6
