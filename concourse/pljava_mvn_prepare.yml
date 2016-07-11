@@ -14,7 +14,7 @@ outputs:
   - name: m2repository
 
 run:
-  path: pljava_src/concourse/scripts/pljava_gpdb_build.sh
+  path: pljava_src/concourse/scripts/pljava_mvn_prepare.sh
   args:
     - bin_gpdb_centos7
     - centos7
