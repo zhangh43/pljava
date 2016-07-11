@@ -11,7 +11,7 @@ mvn_repo_install() {
 mvn_repo_save() {
     pushd ~/.m2
     # Remove build artifacts for org.postgresql.pljava
-    rm -rf repository/org
+    rm -rf repository/org/postgresql
     tar zcvf m2repository.tar.gz ./repository
     popd
     cp ~/.m2/m2repository.tar.gz m2repository
