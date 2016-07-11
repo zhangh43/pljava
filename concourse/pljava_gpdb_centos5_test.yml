@@ -10,6 +10,7 @@ inputs:
   - name: bin_gpdb_centos5
   - name: pljava_src
   - name: pljava_gpdb_centos5_build
+  - name: m2repository
 
 run:
   path: pljava_src/concourse/scripts/pljava_gpdb_test.sh

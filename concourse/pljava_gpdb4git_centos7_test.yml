@@ -11,6 +11,7 @@ inputs:
   - name: pljava_src
   - name: pljava_gpdb4git_centos7_build
   - name: tmp_gpdb4git_gphdfs
+  - name: m2repository
 
 run:
   path: pljava_src/concourse/scripts/pljava_gpdb_test.sh
