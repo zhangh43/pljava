@@ -7,6 +7,7 @@ groups:
   jobs:
   - gpdb_build
   - gpdb4_build
+  - pljava_mvn_prepare
   - pljava_centos5_build
   - pljava_centos6_build
   - pljava_centos7_build
@@ -45,6 +46,17 @@ resources:
     branch: master
     uri: git@github.com:greenplum-db/pljava.git
     private_key: {{gpdblanguages_private_key}}
+
+# Maven Repository
+
+- name: m2repository
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: m2repository/m2repository.tar.gz
 
 #################################
 ########### CentOS 7 ############
@@ -397,12 +409,29 @@ jobs:
 
 # Build PL/Java GP Package
 
-- name: pljava_centos7_build
+# Build GPDB binaries
+- name: pljava_mvn_prepare
   max_in_flight: 3
   plan:
   - aggregate:
     - get: pljava_src
       trigger: true
+    - get: bin_gpdb_centos7
+  - task: pljava_mvn_prepare
+    file: pljava_src/concourse/pljava_mvn_prepare.yml
+  - put: m2repository
+    params:
+      file: m2repository/m2repository.tar.gz
+
+- name: pljava_centos7_build
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_mvn_prepare]
+      trigger: true
+    - get: m2repository
+      passed: [pljava_mvn_prepare]
     - get: bin_gpdb_centos7
       trigger: true
     - get: bin_gpdb4git_centos7
@@ -432,7 +461,10 @@ jobs:
   plan:
   - aggregate:
     - get: pljava_src
+      passed: [pljava_mvn_prepare]
       trigger: true
+    - get: m2repository
+      passed: [pljava_mvn_prepare]
     - get: bin_gpdb_centos6
       trigger: true
     - get: bin_gpdb4git_centos6
@@ -462,7 +494,10 @@ jobs:
   plan:
   - aggregate:
     - get: pljava_src
+      passed: [pljava_mvn_prepare]
       trigger: true
+    - get: m2repository
+      passed: [pljava_mvn_prepare]
     - get: bin_gpdb_centos5
       trigger: true
     - get: bin_gpdb4git_centos5
@@ -496,6 +531,8 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos7_build]
       trigger: true
+    - get: m2repository
+      passed: [pljava_centos7_build]
     - get: bin_gpdb_centos7
       passed: [pljava_centos7_build]
     - get: bin_gpdb4git_centos7
@@ -524,6 +561,8 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos6_build]
       trigger: true
+    - get: m2repository
+      passed: [pljava_centos6_build]
     - get: bin_gpdb_centos6
       passed: [pljava_centos6_build]
     - get: bin_gpdb4git_centos6
@@ -552,6 +591,8 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos5_build]
       trigger: true
+    - get: m2repository
+      passed: [pljava_centos5_build]
     - get: bin_gpdb_centos5
       passed: [pljava_centos5_build]
     - get: bin_gpdb4git_centos5
@@ -582,6 +623,8 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos7_test]
       trigger: true
+    - get: m2repository
+      passed: [pljava_centos7_test]
     - get: bin_gpdb_centos7
       passed: [pljava_centos7_test]
     - get: bin_gpdb4git_centos7
@@ -613,6 +656,8 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos6_test]
       trigger: true
+    - get: m2repository
+      passed: [pljava_centos6_test]
     - get: bin_gpdb_centos6
       passed: [pljava_centos6_test]
     - get: bin_gpdb4git_centos6
@@ -644,6 +689,8 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos5_test]
       trigger: true
+    - get: m2repository
+      passed: [pljava_centos5_test]
     - get: bin_gpdb_centos5
       passed: [pljava_centos5_test]
     - get: bin_gpdb4git_centos5
