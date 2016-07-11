@@ -19,6 +19,7 @@ source /usr/local/greenplum-db/greenplum_path.sh
 pushd pljava_src
 make clean
 make
+mvn dependency:go-offline
 popd
 
 source pljava_src/concourse/scripts/mvn_scripts.sh
