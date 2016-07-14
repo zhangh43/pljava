@@ -331,6 +331,99 @@ resources:
     secret_access_key: {{aws_secret_access_key}}
     regexp: gpdb4off_centos5/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
+#################################
+############ SUSE 11 ############
+#################################
+
+# GPDB
+
+- name: bin_gpdb_suse11
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb/bin_gpdb_suse11.tar.gz
+
+- name: pljava_gpdb_suse11_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb/pljava-suse11.gppkg
+
+- name: pljava_gpdb_suse11_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb_suse11/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
+
+# GPDB4git
+
+- name: bin_gpdb4git_suse11
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb4git/bin_gpdb4git_suse11.tar.gz
+
+- name: pljava_gpdb4git_suse11_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb4git/pljava-suse11.gppkg
+
+- name: pljava_gpdb4git_suse11_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb4git_suse11/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
+
+# GPDB4off
+
+- name: bin_gpdb4off_suse11
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gpdb4off/bin_gpdb4off_suse11.tar.gz
+
+- name: pljava_gpdb4off_suse11_build
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: gppkgs/gpdb4off/pljava-suse11.gppkg
+
+- name: pljava_gpdb4off_suse11_release
+  type: s3
+  source:
+    bucket: {{aws_release_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    regexp: gpdb4off_suse11/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
+
+# GPHDFS
+
 - name: tmp_gpdb4git_gphdfs
   type: s3
   source:
@@ -369,6 +462,8 @@ jobs:
       file: pljava_src/concourse/gpdb4_centos6_build.yml
     - task: gpdb4_centos7_build
       file: pljava_src/concourse/gpdb4_centos7_build.yml
+    - task: gpdb4_suse11_build
+      file: pljava_src/concourse/gpdb4_suse11_build.yml
   - aggregate:
     - put: bin_gpdb4git_centos5
       params:
@@ -379,6 +474,9 @@ jobs:
     - put: bin_gpdb4git_centos7
       params:
         file: gpdb4_centos7_build/bin_gpdb4git_centos7.tar.gz
+    - put: bin_gpdb4git_suse11
+      params:
+        file: gpdb4_suse11_build/bin_gpdb4git_suse11.tar.gz
 
 # Build GPDB binaries
 - name: gpdb_build
@@ -396,6 +494,8 @@ jobs:
       file: pljava_src/concourse/gpdb_centos6_build.yml
     - task: gpdb_centos7_build
       file: pljava_src/concourse/gpdb_centos7_build.yml
+    - task: gpdb_suse11_build
+      file: pljava_src/concourse/gpdb_suse11_build.yml
   - aggregate:
     - put: bin_gpdb_centos5
       params:
@@ -406,6 +506,9 @@ jobs:
     - put: bin_gpdb_centos7
       params:
         file: gpdb_centos7_build/bin_gpdb_centos7.tar.gz
+    - put: bin_gpdb_suse11
+      params:
+        file: gpdb_suse11_build/bin_gpdb_suse11.tar.gz
 
 # Build PL/Java GP Package
 

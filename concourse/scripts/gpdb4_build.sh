@@ -9,7 +9,7 @@ if [ "$1" == "centos5" ]; then
 fi
 
 mkdir /usr/local/greenplum-db
-export BLD_ARCH=rhel5_x86_64
+export BLD_ARCH=$2
 cd gpdb4_src
 CFLAGS="-Wno-error=unused-but-set-variable" ./configure --prefix=/usr/local/greenplum-db --enable-depend --enable-debug --with-python --with-libxml || exit 1
 make prefix=/usr/local/greenplum-db || exit 1
