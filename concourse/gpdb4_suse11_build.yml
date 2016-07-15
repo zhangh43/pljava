@@ -12,7 +12,7 @@ inputs:
   - name: gpdb_rebuild_daily
 
 outputs:
-  - name: gpdb4_centos7_build
+  - name: gpdb4_suse11_build
 
 run:
   path: pljava_src/concourse/scripts/gpdb4_build.sh
