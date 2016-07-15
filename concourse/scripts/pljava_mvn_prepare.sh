@@ -4,7 +4,7 @@ set -x
 set -e
 
 GPDBBIN=$1
-OSVER=$3
+OSVER=$2
 
 if [ "$OSVER" == "centos5" ]; then
     rm -f /usr/bin/python && ln -s /usr/bin/python26 /usr/bin/python
