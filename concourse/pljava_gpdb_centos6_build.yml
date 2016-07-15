@@ -9,7 +9,7 @@ image_resource:
 inputs:
   - name: bin_gpdb_centos6
   - name: pljava_src
-  - name: m2repository
+  - name: m2repository_centos6
 
 outputs:
   - name: pljava_gpdb_centos6_build

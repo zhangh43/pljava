@@ -11,7 +11,7 @@ inputs:
   - name: pljava_src
   - name: pljava_gpdb4git_suse11_build
   - name: tmp_gpdb4git_gphdfs
-  - name: m2repository
+  - name: m2repository_suse11
 
 run:
   path: pljava_src/concourse/scripts/pljava_gpdb_test.sh

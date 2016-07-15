@@ -18,7 +18,7 @@ popd
 source /usr/local/greenplum-db/greenplum_path.sh
 
 source pljava_src/concourse/scripts/mvn_scripts.sh
-mvn_repo_install
+mvn_repo_install $OSVER
 
 pushd pljava_src
 make clean

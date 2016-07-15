@@ -9,14 +9,12 @@ image_resource:
 inputs:
   - name: bin_gpdb_suse11
   - name: pljava_src
-  - name: m2repository_suse11
 
 outputs:
-  - name: pljava_gpdb_suse11_build
+  - name: m2repository_suse11
 
 run:
-  path: pljava_src/concourse/scripts/pljava_gpdb_build.sh
+  path: pljava_src/concourse/scripts/pljava_mvn_prepare.sh
   args:
     - bin_gpdb_suse11
-    - pljava_gpdb_suse11_build
     - suse11

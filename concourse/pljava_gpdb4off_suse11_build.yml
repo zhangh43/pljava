@@ -9,7 +9,7 @@ image_resource:
 inputs:
   - name: bin_gpdb4off_suse11
   - name: pljava_src
-  - name: m2repository
+  - name: m2repository_suse11
 
 outputs:
   - name: pljava_gpdb4off_suse11_build

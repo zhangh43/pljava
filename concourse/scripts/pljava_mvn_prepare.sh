@@ -23,4 +23,4 @@ mvn dependency:go-offline
 popd
 
 source pljava_src/concourse/scripts/mvn_scripts.sh
-mvn_repo_save
+mvn_repo_save $OSVER

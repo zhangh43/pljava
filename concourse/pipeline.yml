@@ -11,12 +11,15 @@ groups:
   - pljava_centos5_build
   - pljava_centos6_build
   - pljava_centos7_build
+  - pljava_suse11_build
   - pljava_centos5_test
   - pljava_centos6_test
   - pljava_centos7_test
+  - pljava_suse11_test
   - pljava_centos5_release
   - pljava_centos6_release
   - pljava_centos7_release
+  - pljava_suse11_release
 
 ################################################################################
 ################################## RESOURCES ###################################
@@ -46,17 +49,6 @@ resources:
     branch: master
     uri: git@github.com:greenplum-db/pljava.git
     private_key: {{gpdblanguages_private_key}}
-
-# Maven Repository
-
-- name: m2repository
-  type: s3
-  source:
-    bucket: {{aws_bucket_name}}
-    region_name: {{aws_region_name}}
-    access_key_id: {{aws_access_key_id}}
-    secret_access_key: {{aws_secret_access_key}}
-    versioned_file: m2repository/m2repository.tar.gz
 
 #################################
 ########### CentOS 7 ############
@@ -149,6 +141,17 @@ resources:
     secret_access_key: {{aws_secret_access_key}}
     regexp: gpdb4off_centos7/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
+# Maven Repository
+
+- name: m2repository_centos7
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: m2repository/m2repository_centos7.tar.gz
+
 #################################
 ########### CentOS 6 ############
 #################################
@@ -239,6 +242,17 @@ resources:
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
     regexp: gpdb4off_centos6/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
+
+# Maven Repository
+
+- name: m2repository_centos6
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: m2repository/m2repository_centos6.tar.gz
 
 #################################
 ########### CentOS 5 ############
@@ -331,6 +345,17 @@ resources:
     secret_access_key: {{aws_secret_access_key}}
     regexp: gpdb4off_centos5/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
 
+# Maven Repository
+
+- name: m2repository_centos5
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: m2repository/m2repository_centos5.tar.gz
+
 #################################
 ############ SUSE 11 ############
 #################################
@@ -421,6 +446,17 @@ resources:
     access_key_id: {{aws_access_key_id}}
     secret_access_key: {{aws_secret_access_key}}
     regexp: gpdb4off_suse11/pljava-ossv.*_pv([0-9\.]*).*\.gppkg
+
+# Maven Repository
+
+- name: m2repository_suse11
+  type: s3
+  source:
+    bucket: {{aws_bucket_name}}
+    region_name: {{aws_region_name}}
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    versioned_file: m2repository/m2repository_suse11.tar.gz
 
 # GPHDFS
 
@@ -519,12 +555,32 @@ jobs:
   - aggregate:
     - get: pljava_src
       trigger: true
+    - get: bin_gpdb_centos5
+    - get: bin_gpdb_centos6
     - get: bin_gpdb_centos7
-  - task: pljava_mvn_prepare
-    file: pljava_src/concourse/pljava_mvn_prepare.yml
-  - put: m2repository
-    params:
-      file: m2repository/m2repository.tar.gz
+    - get: bin_gpdb_suse11
+  - aggregate:
+    - task: pljava_mvn_prepare_centos5
+      file: pljava_src/concourse/pljava_mvn_prepare_centos5.yml
+    - task: pljava_mvn_prepare_centos6
+      file: pljava_src/concourse/pljava_mvn_prepare_centos6.yml
+    - task: pljava_mvn_prepare_centos7
+      file: pljava_src/concourse/pljava_mvn_prepare_centos7.yml
+    - task: gpdb_suse11_build
+      file: pljava_src/concourse/pljava_mvn_prepare_suse11.yml
+  - aggregate:
+    - put: m2repository_centos5
+      params:
+        file: m2repository_centos5/m2repository_centos5.tar.gz
+    - put: m2repository_centos6
+      params:
+        file: m2repository_centos6/m2repository_centos6.tar.gz
+    - put: m2repository_centos7
+      params:
+        file: m2repository_centos7/m2repository_centos7.tar.gz
+    - put: m2repository_suse11
+      params:
+        file: m2repository_suse11/m2repository_suse11.tar.gz
 
 - name: pljava_centos7_build
   max_in_flight: 3
@@ -533,7 +589,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_mvn_prepare]
       trigger: true
-    - get: m2repository
+    - get: m2repository_centos7
       passed: [pljava_mvn_prepare]
     - get: bin_gpdb_centos7
       trigger: true
@@ -566,7 +622,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_mvn_prepare]
       trigger: true
-    - get: m2repository
+    - get: m2repository_centos6
       passed: [pljava_mvn_prepare]
     - get: bin_gpdb_centos6
       trigger: true
@@ -599,7 +655,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_mvn_prepare]
       trigger: true
-    - get: m2repository
+    - get: m2repository_centos5
       passed: [pljava_mvn_prepare]
     - get: bin_gpdb_centos5
       trigger: true
@@ -632,7 +688,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_mvn_prepare]
       trigger: true
-    - get: m2repository
+    - get: m2repository_suse11
       passed: [pljava_mvn_prepare]
     - get: bin_gpdb_suse11
       trigger: true
@@ -667,7 +723,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos7_build]
       trigger: true
-    - get: m2repository
+    - get: m2repository_centos7
       passed: [pljava_centos7_build]
     - get: bin_gpdb_centos7
       passed: [pljava_centos7_build]
@@ -697,7 +753,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos6_build]
       trigger: true
-    - get: m2repository
+    - get: m2repository_centos6
       passed: [pljava_centos6_build]
     - get: bin_gpdb_centos6
       passed: [pljava_centos6_build]
@@ -727,7 +783,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos5_build]
       trigger: true
-    - get: m2repository
+    - get: m2repository_centos5
       passed: [pljava_centos5_build]
     - get: bin_gpdb_centos5
       passed: [pljava_centos5_build]
@@ -757,7 +813,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_suse11_build]
       trigger: true
-    - get: m2repository
+    - get: m2repository_suse11
       passed: [pljava_suse11_build]
     - get: bin_gpdb_suse11
       passed: [pljava_suse11_build]
@@ -789,7 +845,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos7_test]
       trigger: true
-    - get: m2repository
+    - get: m2repository_centos7
       passed: [pljava_centos7_test]
     - get: bin_gpdb_centos7
       passed: [pljava_centos7_test]
@@ -822,7 +878,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos6_test]
       trigger: true
-    - get: m2repository
+    - get: m2repository_centos6
       passed: [pljava_centos6_test]
     - get: bin_gpdb_centos6
       passed: [pljava_centos6_test]
@@ -855,7 +911,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos5_test]
       trigger: true
-    - get: m2repository
+    - get: m2repository_centos5
       passed: [pljava_centos5_test]
     - get: bin_gpdb_centos5
       passed: [pljava_centos5_test]
@@ -888,7 +944,7 @@ jobs:
     - get: pljava_src
       passed: [pljava_suse11_test]
       trigger: true
-    - get: m2repository
+    - get: m2repository_suse11
       passed: [pljava_suse11_test]
     - get: bin_gpdb_suse11
       passed: [pljava_suse11_test]

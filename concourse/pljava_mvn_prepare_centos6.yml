@@ -9,14 +9,12 @@ image_resource:
 inputs:
   - name: bin_gpdb_centos6
   - name: pljava_src
-  - name: m2repository_centos6
 
 outputs:
-  - name: pljava_gpdb_centos6_release
+  - name: m2repository_centos6
 
 run:
-  path: pljava_src/concourse/scripts/pljava_gpdb_release.sh
+  path: pljava_src/concourse/scripts/pljava_mvn_prepare.sh
   args:
     - bin_gpdb_centos6
-    - pljava_gpdb_centos6_release
     - centos6

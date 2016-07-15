@@ -9,14 +9,12 @@ image_resource:
 inputs:
   - name: bin_gpdb_centos5
   - name: pljava_src
-  - name: m2repository_centos5
 
 outputs:
-  - name: pljava_gpdb_centos5_release
+  - name: m2repository_centos5
 
 run:
-  path: pljava_src/concourse/scripts/pljava_gpdb_release.sh
+  path: pljava_src/concourse/scripts/pljava_mvn_prepare.sh
   args:
     - bin_gpdb_centos5
-    - pljava_gpdb_centos5_release
     - centos5
