@@ -11,7 +11,13 @@ fi
 mkdir /usr/local/greenplum-db
 export BLD_ARCH=$2
 cd gpdb4_src
-CFLAGS="-Wno-error=unused-but-set-variable" ./configure --prefix=/usr/local/greenplum-db --enable-depend --enable-debug --with-python --with-libxml || exit 1
+
+if [ "$1" == "suse11" ]; then
+    ./configure --prefix=/usr/local/greenplum-db --enable-depend --enable-debug --with-python --with-libxml || exit 1
+else
+    CFLAGS="-Wno-error=unused-but-set-variable" ./configure --prefix=/usr/local/greenplum-db --enable-depend --enable-debug --with-python --with-libxml || exit 1
+fi
+
 make prefix=/usr/local/greenplum-db || exit 1
 make install prefix=/usr/local/greenplum-db || exit 1
 cd ..
