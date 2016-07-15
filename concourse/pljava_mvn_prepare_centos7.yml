@@ -11,7 +11,7 @@ inputs:
   - name: pljava_src
 
 outputs:
-  - name: m2repository
+  - name: m2repository_centos7
 
 run:
   path: pljava_src/concourse/scripts/pljava_mvn_prepare.sh
