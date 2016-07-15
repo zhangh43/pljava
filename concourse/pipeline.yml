@@ -625,6 +625,39 @@ jobs:
       params:
         file: pljava_gpdb_centos5_build/pljava-centos5.gppkg
 
+- name: pljava_suse11_build
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_mvn_prepare]
+      trigger: true
+    - get: m2repository
+      passed: [pljava_mvn_prepare]
+    - get: bin_gpdb_suse11
+      trigger: true
+    - get: bin_gpdb4git_suse11
+      trigger: true
+    - get: bin_gpdb4off_suse11
+      trigger: true
+  - aggregate:
+    - task: pljava_gpdb4git_build
+      file: pljava_src/concourse/pljava_gpdb4git_suse11_build.yml
+    - task: pljava_gpdb4off_build
+      file: pljava_src/concourse/pljava_gpdb4off_suse11_build.yml
+    - task: pljava_gpdb_build
+      file: pljava_src/concourse/pljava_gpdb_suse11_build.yml
+  - aggregate:
+    - put: pljava_gpdb4git_suse11_build
+      params:
+        file: pljava_gpdb4git_suse11_build/pljava-suse11.gppkg
+    - put: pljava_gpdb4off_suse11_build
+      params:
+        file: pljava_gpdb4off_suse11_build/pljava-suse11.gppkg
+    - put: pljava_gpdb_suse11_build
+      params:
+        file: pljava_gpdb_suse11_build/pljava-suse11.gppkg
+
 # Test PL/Java GP Package
 
 - name: pljava_centos7_test
@@ -716,6 +749,36 @@ jobs:
       file: pljava_src/concourse/pljava_gpdb4off_centos5_test.yml
     - task: pljava_gpdb_test
       file: pljava_src/concourse/pljava_gpdb_centos5_test.yml
+
+- name: pljava_suse11_test
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_suse11_build]
+      trigger: true
+    - get: m2repository
+      passed: [pljava_suse11_build]
+    - get: bin_gpdb_suse11
+      passed: [pljava_suse11_build]
+    - get: bin_gpdb4git_suse11
+      passed: [pljava_suse11_build]
+    - get: bin_gpdb4off_suse11
+      passed: [pljava_suse11_build]
+    - get: pljava_gpdb_suse11_build
+      passed: [pljava_suse11_build]
+    - get: pljava_gpdb4git_suse11_build
+      passed: [pljava_suse11_build]
+    - get: pljava_gpdb4off_suse11_build
+      passed: [pljava_suse11_build]
+    - get: tmp_gpdb4git_gphdfs
+  - aggregate:
+    - task: pljava_gpdb4git_test
+      file: pljava_src/concourse/pljava_gpdb4git_suse11_test.yml
+    - task: pljava_gpdb4off_test
+      file: pljava_src/concourse/pljava_gpdb4off_suse11_test.yml
+    - task: pljava_gpdb_test
+      file: pljava_src/concourse/pljava_gpdb_suse11_test.yml
 
 # Release PL/Java GP Package
 
@@ -817,3 +880,36 @@ jobs:
     - put: pljava_gpdb_centos5_release
       params:
         file: pljava_gpdb_centos5_release/pljava-*.gppkg
+
+- name: pljava_suse11_release
+  max_in_flight: 3
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_suse11_test]
+      trigger: true
+    - get: m2repository
+      passed: [pljava_suse11_test]
+    - get: bin_gpdb_suse11
+      passed: [pljava_suse11_test]
+    - get: bin_gpdb4git_suse11
+      passed: [pljava_suse11_test]
+    - get: bin_gpdb4off_suse11
+      passed: [pljava_suse11_test]
+  - aggregate:
+    - task: pljava_gpdb4git_release
+      file: pljava_src/concourse/pljava_gpdb4git_suse11_release.yml
+    - task: pljava_gpdb4off_release
+      file: pljava_src/concourse/pljava_gpdb4off_suse11_release.yml
+    - task: pljava_gpdb_release
+      file: pljava_src/concourse/pljava_gpdb_suse11_release.yml
+  - aggregate:
+    - put: pljava_gpdb4git_suse11_release
+      params:
+        file: pljava_gpdb4git_suse11_release/pljava-*.gppkg
+    - put: pljava_gpdb4off_suse11_release
+      params:
+        file: pljava_gpdb4off_suse11_release/pljava-*.gppkg
+    - put: pljava_gpdb_suse11_release
+      params:
+        file: pljava_gpdb_suse11_release/pljava-*.gppkg
