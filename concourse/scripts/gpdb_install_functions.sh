@@ -12,10 +12,6 @@ setup_ssh_for_user() {
   ssh-keygen -t rsa -N "" -f "${home_dir}/.ssh/id_rsa"
   cat "${home_dir}/.ssh/id_rsa.pub" >> "${home_dir}/.ssh/authorized_keys"
   chmod 0600 "${home_dir}/.ssh/authorized_keys"
-#  cat << 'NOROAMING' >> "${home_dir}/.ssh/config"
-#Host *
-#  UseRoaming no
-#NOROAMING
   chown -R "${user}" "${home_dir}/.ssh"
 }
 
@@ -37,11 +33,26 @@ transfer_ownership() {
 }
 
 setup_gpadmin_user() {
+  set -x
+  local osver="${1}"
   /usr/sbin/useradd gpadmin
   echo -e "password\npassword" | passwd gpadmin
   groupadd supergroup
-  usermod -a -G supergroup gpadmin
-  usermod -a -G docker gpadmin
+  case $osver in
+    centos*|rhel*)
+      usermod -a -G supergroup gpadmin
+      ;;
+    suse*)
+      groupadd gpadmin
+      usermod -A gpadmin,supergroup gpadmin
+      mkdir ~gpadmin
+      chown -R gpadmin:gpadmin ~gpadmin
+      ;;
+    *)
+      echo "ERROR: OS version '$osver' is not supported"
+      exit 1
+      ;;
+  esac
   setup_ssh_for_user gpadmin
   transfer_ownership
   chmod u+s `which ping`

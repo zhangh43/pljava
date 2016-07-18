@@ -5,9 +5,11 @@ set -x
 GPDATA=$1
 
 # Configure profile
-rm ~/.bashrc
+rm -f ~/.bashrc
 printf '#!/bin/bash\n\n'                                     >> ~/.bashrc
-printf '. /etc/bashrc\n\n'                                   >> ~/.bashrc
+printf 'if [ -f /etc/bashrc ]; then\n'                       >> ~/.bashrc
+printf '  source /etc/bashrc\n'                              >> ~/.bashrc
+printf 'fi\n\n'                                              >> ~/.bashrc
 printf '\n# GPDB environment variables\nexport GPDB=/gpdb\n' >> ~/.bashrc
 printf 'export GPHOME=/usr/local/greenplum-db\n'             >> ~/.bashrc
 printf 'export GPDATA=/data\n'                               >> ~/.bashrc

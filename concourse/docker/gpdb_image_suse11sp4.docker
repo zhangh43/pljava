@@ -14,7 +14,8 @@ RUN zypper --gpg-auto-import-keys -n install python-pip
 RUN pip install psi lockfile paramiko setuptools epydoc psutil
 
 # Install runtime dependencies
-RUN zypper --gpg-auto-import-keys -n install openssh net-tools iproute
+RUN zypper --gpg-auto-import-keys -n install openssh net-tools iproute iputils zip unzip \
+                less glibc-locale libnuma1 gmp-devel mpfr-devel glibc-devel-32bit texinfo
 RUN zypper --gpg-auto-import-keys -n install java-1.6.0-openjdk java-1.6.0-openjdk-devel
 RUN echo /usr/lib/jvm/jre/lib/amd64/server/ > /etc/ld.so.conf.d/jvm.conf && ldconfig
 
@@ -25,7 +26,18 @@ RUN cd /tmp && \
     ln -s /usr/local/apache-maven-3.2.5 /usr/local/maven && \
     rm -f apache-maven-3.2.5-bin.tar.gz
 
+# GCC
+RUN cd /tmp && \
+    wget --no-check-certificate https://github.com/gcc-mirror/gcc/archive/gcc-4_4_2-release.tar.gz && \
+    tar zxvf gcc-4_4_2-release && \
+    cd gcc-gcc-4_4_2-release/ && \
+    ./configure --prefix=/usr/local/gcc && \
+    make -j2 && \
+    make install && \
+    rm -rf /tmp/gcc*
+
 # Stupid GPDB4 makefiles make me do awful things
 RUN ln -s /bin/mkdir /usr/bin/mkdir
 
-ENV PATH=/usr/local/maven/bin:/usr/local/curl/bin:$PATH
+ENV PATH=/usr/local/gcc/bin:/usr/local/maven/bin:/usr/local/curl/bin:$PATH
+ENV LD_LIBRARY_PATH=/usr/local/gcc/lib64

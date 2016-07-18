@@ -27,16 +27,19 @@ source /usr/local/greenplum-db/greenplum_path.sh || exit 1
 # GPDB Installation Preparation
 mkdir /data
 source pljava_src/concourse/scripts/gpdb_install_functions.sh || exit 1
-setup_gpadmin_user
+setup_gpadmin_user $OSVER
 setup_sshd
 
 # GPDB Installation
 cp pljava_src/concourse/scripts/*.sh /tmp
 chmod 777 /tmp/*.sh
-runuser gpadmin -c "source /usr/local/greenplum-db/greenplum_path.sh && bash /tmp/gpdb_install.sh /data" || exit 1
+su - gpadmin -c "source /usr/local/greenplum-db/greenplum_path.sh && bash /tmp/gpdb_install.sh /data" || exit 1
+
+# TODO: temporary
+exit 0
 
 # Installing PL/Java and running tests
-runuser gpadmin -c "bash /tmp/pljava_install_test.sh $PLJAVABIN $OSVER $WORKDIR $TMPDIR"
+su - gpadmin -c "bash /tmp/pljava_install_test.sh $PLJAVABIN $OSVER $WORKDIR $TMPDIR"
 RETCODE=$?
 
 if [ $RETCODE -ne 0 ]; then
