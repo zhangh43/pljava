@@ -35,9 +35,6 @@ cp pljava_src/concourse/scripts/*.sh /tmp
 chmod 777 /tmp/*.sh
 su - gpadmin -c "source /usr/local/greenplum-db/greenplum_path.sh && bash /tmp/gpdb_install.sh /data" || exit 1
 
-# TODO: temporary
-exit 0
-
 # Installing PL/Java and running tests
 su - gpadmin -c "bash /tmp/pljava_install_test.sh $PLJAVABIN $OSVER $WORKDIR $TMPDIR"
 RETCODE=$?
