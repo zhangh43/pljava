@@ -1161,6 +1161,30 @@ static jint initializeJavaVM(JVMOptList *optList)
 
 static Datum internalCallHandler(bool trusted, PG_FUNCTION_ARGS);
 
+/*
+* this is for backward compatibility with 4.x versions as 
+* we have pljavau_call_handler in the pg_pltemplate
+*/
+
+extern PLJAVADLLEXPORT Datum pljavau_call_handler(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(pljavau_call_handler);
+Datum pljavau_call_handler(PG_FUNCTION_ARGS)
+{
+	return internalCallHandler(false, fcinfo);
+}
+
+extern PLJAVADLLEXPORT Datum pljava_call_handler(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(pljava_call_handler);
+
+/*
+ * This is the entry point for all trusted calls.
+ */
+Datum pljava_call_handler(PG_FUNCTION_ARGS)
+{
+	return internalCallHandler(true, fcinfo);
+}
+
+
 extern PLJAVADLLEXPORT Datum javau_call_handler(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(javau_call_handler);
 
