@@ -3,7 +3,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: agrishchenko/pljava_centos5_ci
+    repository: pivotaldata/plc_gpdb_centos5
     tag: 'latest'
 
 inputs:
