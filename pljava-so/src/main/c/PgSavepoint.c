@@ -15,6 +15,9 @@
 #include "pljava/type/String.h"
 #include "pljava/SPI.h"
 
+#define pg_unreachable() abort()
+
+
 extern void PgSavepoint_initialize(void);
 void PgSavepoint_initialize(void)
 {

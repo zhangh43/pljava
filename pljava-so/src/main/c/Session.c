@@ -12,6 +12,9 @@
 #include "pljava/Session.h"
 #include "pljava/type/AclId.h"
 
+#define pg_unreachable() abort()
+
+
 extern void Session_initialize(void);
 void Session_initialize(void)
 {

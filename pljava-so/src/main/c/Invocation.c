@@ -16,6 +16,8 @@
 #include "pljava/JNICalls.h"
 #include "pljava/Backend.h"
 
+#define pg_unreachable() abort()
+
 #define LOCAL_FRAME_SIZE 128
 
 struct CallLocal_

@@ -19,6 +19,8 @@
 #include "pljava/type/Portal.h"
 #include "pljava/type/String.h"
 
+#define pg_unreachable() abort()
+
 #if defined(NEED_MISCADMIN_FOR_STACK_BASE)
 #include <miscadmin.h>
 #endif

@@ -13,6 +13,9 @@
 #include <postgres.h>
 #include "pljava/SQLInputFromChunk.h"
 
+#define pg_unreachable() abort()
+
+
 static jclass    s_SQLInputFromChunk_class;
 static jmethodID s_SQLInputFromChunk_init;
 static jmethodID s_SQLInputFromChunk_close;

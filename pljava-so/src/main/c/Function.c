@@ -18,12 +18,15 @@
 #include "pljava/type/TriggerData.h"
 #include "pljava/type/UDT.h"
 
+
 #include <catalog/pg_proc.h>
 #include <catalog/pg_namespace.h>
 #include <utils/builtins.h>
 #include <ctype.h>
 #include <funcapi.h>
 #include <utils/typcache.h>
+
+#define pg_unreachable() abort()
 
 #ifdef _MSC_VER
 #	define strcasecmp _stricmp

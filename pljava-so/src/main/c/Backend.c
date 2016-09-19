@@ -47,6 +47,8 @@
 #include "utils/timeout.h"
 #endif
 
+#define pg_unreachable() abort()
+
 /* Include the 'magic block' that PostgreSQL 8.2 and up will use to ensure
  * that a module is not loaded into an incompatible server.
  */ 

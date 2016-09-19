@@ -14,6 +14,9 @@
 
 #include "org_postgresql_pljava_jdbc_SQLInputFromTuple.h"
 
+#define pg_unreachable() abort()
+
+
 static jclass    s_SQLInputFromTuple_class;
 static jmethodID s_SQLInputFromTuple_init;
 

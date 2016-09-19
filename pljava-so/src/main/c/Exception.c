@@ -15,6 +15,8 @@
 #include "pljava/type/String.h"
 #include "pljava/type/ErrorData.h"
 
+#define pg_unreachable() abort()
+
 jclass Class_class;
 jmethodID Class_getName;
 

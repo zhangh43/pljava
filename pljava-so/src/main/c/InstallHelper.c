@@ -44,6 +44,8 @@
 #include "pljava/PgObject.h"
 #include "pljava/type/String.h"
 
+#define pg_unreachable() abort()
+
 /*
  * CppAsString2 first appears in PG8.4.  Once the compatibility target reaches
  * 8.4, this fallback will not be needed.

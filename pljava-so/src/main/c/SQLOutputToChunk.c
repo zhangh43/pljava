@@ -11,6 +11,9 @@
 
 #include "org_postgresql_pljava_jdbc_SQLOutputToChunk.h"
 
+#define pg_unreachable() abort()
+
+
 static jclass    s_SQLOutputToChunk_class;
 static jmethodID s_SQLOutputToChunk_init;
 static jmethodID s_SQLOutputToChunk_close;

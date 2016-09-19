@@ -19,6 +19,9 @@
 #include <miscadmin.h>
 #endif
 
+#define pg_unreachable() abort()
+
+
 Savepoint* infant = 0;
 
 extern void SPI_initialize(void);
