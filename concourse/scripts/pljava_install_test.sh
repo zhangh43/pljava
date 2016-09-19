@@ -17,5 +17,7 @@ gppkg -i $PLJAVABIN/pljava-$OSVER.gppkg || exit 1
 rm -rf $TMPDIR
 cp -r pljava_src $TMPDIR
 cd $TMPDIR
-
+if [ "$OSVER" == "suse11" ]; then
+    sed -i 's/UTC/GMT/g' /tmp/localplccopy/gpdb/tests/expected/pljava_test.out
+fi
 make targetcheck || exit 1

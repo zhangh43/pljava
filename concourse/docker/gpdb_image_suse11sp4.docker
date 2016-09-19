@@ -17,7 +17,7 @@ RUN pip install psi lockfile paramiko setuptools epydoc psutil
 RUN zypper --gpg-auto-import-keys -n install openssh net-tools iproute iputils zip unzip \
                 less glibc-locale libnuma1 gmp-devel mpfr-devel glibc-devel-32bit texinfo
 RUN zypper --gpg-auto-import-keys -n install java-1.6.0-openjdk java-1.6.0-openjdk-devel
-RUN echo /usr/lib/jvm/jre/lib/amd64/server/ > /etc/ld.so.conf.d/jvm.conf && ldconfig
+RUN echo  $(readlink -f /usr/bin/java | sed "s:bin/java::")lib/amd64/server  > /etc/ld.so.conf.d/jvm.conf && ldconfig
 
 # maven
 RUN cd /tmp && \
