@@ -35,6 +35,15 @@ extern int vsnprintf(char* buf, size_t count, const char* format, va_list arg);
 #include <tcop/tcopprot.h>
 
 /*
+* for now we have to support older compilers that don't have 
+* _builtins once we drop support for CENTOS5 this can be removed
+*/
+#ifdef HAVE__BUILTIN_UNREACHABLE
+#undef HAVE__BUILTIN_UNREACHABLE
+#endif
+
+
+/*
  * AssertVariableIsOfType appeared in PG9.3. Can test for the macro directly.
  * Likewise for StaticAssertStmt.
  */
