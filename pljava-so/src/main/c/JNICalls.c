@@ -16,6 +16,8 @@
 #include "pljava/type/ErrorData.h"
 #include "pljava/type/String.h"
 
+#define pg_unreachable() abort()
+
 JNIEnv* jniEnv;
 jint (JNICALL *pljava_createvm)(JavaVM **, void **, void *);
 
