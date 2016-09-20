@@ -27,6 +27,8 @@
 #include <miscadmin.h>
 #endif
 
+#define pg_unreachable() abort()
+
 static jclass    s_Portal_class;
 static jmethodID s_Portal_init;
 static jfieldID  s_Portal_pointer;

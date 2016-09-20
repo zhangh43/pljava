@@ -13,6 +13,8 @@
 #include "pljava/type/Type_priv.h"
 #include "pljava/type/Array.h"
 
+#define pg_unreachable() abort()
+
 static Type _Any_getRealType(Type self, Oid realId, jobject typeMap)
 {
 	Type real = Type_fromOid(realId, typeMap);

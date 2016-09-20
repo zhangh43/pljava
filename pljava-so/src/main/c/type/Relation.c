@@ -19,6 +19,8 @@
 #include "pljava/type/Tuple.h"
 #include "pljava/type/Relation.h"
 
+#define pg_unreachable() abort()
+
 static jclass    s_Relation_class;
 static jmethodID s_Relation_init;
 

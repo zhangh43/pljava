@@ -17,6 +17,8 @@
 #include "pljava/type/Tuple.h"
 #include "pljava/type/TupleDesc.h"
 
+#define pg_unreachable() abort()
+
 static jclass    s_Tuple_class;
 static jmethodID s_Tuple_init;
 

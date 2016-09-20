@@ -20,6 +20,8 @@
 #include "pljava/Exception.h"
 #include "pljava/Invocation.h"
 
+#define pg_unreachable() abort()
+
 static jclass    s_Oid_class;
 static jmethodID s_Oid_init;
 static jmethodID s_Oid_registerType;

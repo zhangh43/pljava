@@ -26,6 +26,8 @@
 #include <utils/bytea.h>
 #endif
 
+#define pg_unreachable() abort()
+
 static jobject coerceScalarDatum(UDT self, Datum arg)
 {
 	jobject result;

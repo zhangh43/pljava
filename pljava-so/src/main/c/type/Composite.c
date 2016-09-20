@@ -17,6 +17,9 @@
 #include "pljava/Invocation.h"
 #include "org_postgresql_pljava_jdbc_SingleRowReader.h"
 
+#define pg_unreachable() abort()
+
+
 struct Composite_
 {
 	/*

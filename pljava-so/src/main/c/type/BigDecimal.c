@@ -11,6 +11,7 @@
 #include <utils/numeric.h>
 
 #include "pljava/type/String_priv.h"
+#define pg_unreachable() abort()
 
 /*
  * BigDecimal type. We use String conversions here. Perhaps there's

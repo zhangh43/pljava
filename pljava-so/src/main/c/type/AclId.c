@@ -17,6 +17,8 @@
 #include "org_postgresql_pljava_internal_AclId.h"
 #include "pljava/Exception.h"
 
+#define pg_unreachable() abort()
+
 static jclass    s_AclId_class;
 static jmethodID s_AclId_init;
 static jfieldID  s_AclId_m_native;

@@ -19,6 +19,8 @@
 #include "pljava/type/TupleDesc.h"
 #include "pljava/type/Relation.h"
 
+#define pg_unreachable() abort()
+
 static jclass    s_TriggerData_class;
 static jmethodID s_TriggerData_init;
 static jmethodID s_TriggerData_getTriggerReturnTuple;

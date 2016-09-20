@@ -12,6 +12,8 @@
 
 #include "pljava/type/Type_priv.h"
 
+#define pg_unreachable() abort()
+
 /*
  * void primitive type.
  */

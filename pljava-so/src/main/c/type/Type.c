@@ -26,6 +26,8 @@
 #include "pljava/HashMap.h"
 #include "pljava/SPI.h"
 
+#define pg_unreachable() abort()
+
 #if PG_VERSION_NUM < 80300
 typedef enum CoercionPathType
 {

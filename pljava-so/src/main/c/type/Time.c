@@ -16,6 +16,8 @@
 #include "pljava/type/Time.h"
 #include "pljava/type/Timestamp.h"
 
+#define pg_unreachable() abort()
+
 /*
  * Time type. Postgres will pass (and expect in return) a local Time.
  * The Java java.sql.Time is UTC time and not a perfect fit. Perhaps

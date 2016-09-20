@@ -16,6 +16,8 @@
 #include "pljava/type/Type_priv.h"
 #include "pljava/type/Timestamp.h"
 
+#define pg_unreachable() abort()
+
 #define EPOCH_DIFF (((uint32)86400) * (POSTGRES_EPOCH_JDATE - UNIX_EPOCH_JDATE))
 
 /*
