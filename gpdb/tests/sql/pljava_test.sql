@@ -12,9 +12,9 @@ SELECT javatest.print('2016-01-01'::date);
 SELECT javatest.print('2016-01-01'::date) FROM javatest.test;
 SELECT * FROM javatest.print('2016-01-01'::date);
 
-SELECT javatest.print('12:34:56'::time);
-SELECT javatest.print('12:34:56'::time) FROM javatest.test;
-SELECT * FROM javatest.print('12:34:56'::time);
+SELECT javatest.print('12:34:56-00'::time);
+SELECT javatest.print('12:34:56-00'::time) FROM javatest.test;
+SELECT * FROM javatest.print('12:34:56-00'::time);
 
 SELECT javatest.print('2016-02-14 08:09:10'::timestamp);
 SELECT javatest.print('2016-02-14 08:09:10'::timestamp) FROM javatest.test;
