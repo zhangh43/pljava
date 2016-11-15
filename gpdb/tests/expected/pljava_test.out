@@ -35,19 +35,19 @@ SELECT * FROM javatest.print('2016-01-01'::date);
 SELECT javatest.print('12:34:56-00'::time);
        print        
 --------------------
- 20:34:56 GMT +0000
+ 20:34:56 UTC +0000
 (1 row)
 
 SELECT javatest.print('12:34:56-00'::time) FROM javatest.test;
        print        
 --------------------
- 20:34:56 GMT +0000
+ 20:34:56 UTC +0000
 (1 row)
 
 SELECT * FROM javatest.print('12:34:56-00'::time);
        print        
 --------------------
- 20:34:56 GMT +0000
+ 20:34:56 UTC +0000
 (1 row)
 
 SELECT javatest.print('2016-02-14 08:09:10'::timestamp);
