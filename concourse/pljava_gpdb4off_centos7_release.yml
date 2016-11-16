@@ -3,7 +3,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: pivotaldata/pljavaCentos7_ci
+    repository: pivotaldata/pljava_centos7_ci
     tag: 'latest'
 
 inputs:
