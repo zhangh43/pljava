@@ -95,6 +95,13 @@ SELECT javatest.java_getSystemProperty('user.language');
 
 -- org.postgresql.pljava.example.Security
 
+-- start_matchsubs
+
+-- m/ERROR\:.* \(JNICalls\.c:\d+\)/
+-- s/\(JNICalls\.c:\d+\)//
+
+-- end_matchsubs
+
 /*
  * This function should fail since file system access is
  * prohibited when the language is trusted.
