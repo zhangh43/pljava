@@ -643,8 +643,12 @@ SELECT id,name, salary FROM employees2 order by id;
   4 | David |    400
 (4 rows)
 
+-- start_matchsubs
+-- m/ERROR\:.* \(cdbdisp\.c:\d+\)/
+-- s///
+-- end_matchsubs
 SELECT javatest.transferPeople(1) FROM javatest.test;  -- should error
-ERROR:  function cannot execute on segment because it accesses relation "javatest.employees1"  (seg0 slice1 pljava.pivotal.io:40000 pid=15391) (cdbdisp.c:1326)
+ERROR:  function cannot execute on segment because it accesses relation "javatest.employees1"
 DETAIL:  SQL statement "SELECT id, name, salary FROM employees1 WHERE salary > $1"
 select javatest.maxFromSetReturnExample(2,10);
  maxfromsetreturnexample 

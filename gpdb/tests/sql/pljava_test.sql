@@ -189,6 +189,14 @@ select javatest.makearray('a'::varchar);
 SELECT javatest.transferPeople(1);
 SELECT * FROM employees1 order by id;
 SELECT id,name, salary FROM employees2 order by id;
+
+-- start_matchsubs
+
+-- m/ERROR\:.* \(cdbdist\.c:\d+\)/
+-- s///
+
+-- end_matchsubs
+
 SELECT javatest.transferPeople(1) FROM javatest.test;  -- should error
 
 select javatest.maxFromSetReturnExample(2,10);
