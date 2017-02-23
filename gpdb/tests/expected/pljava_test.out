@@ -388,7 +388,8 @@ SELECT javatest.java_getSystemProperty('user.language');
  en
 (1 row)
 
--- org.postgresql.pljava.example.Security-- start_matchsubs
+-- org.postgresql.pljava.example.Security
+-- start_matchsubs
 -- m/ERROR\:.* \(JNICalls\.c:\d+\)/
 -- s/\(JNICalls\.c:\d+\)//
 -- end_matchsubs
