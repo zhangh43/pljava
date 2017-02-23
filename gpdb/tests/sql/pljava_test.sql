@@ -192,7 +192,7 @@ SELECT id,name, salary FROM employees2 order by id;
 
 -- start_matchsubs
 
--- m/ERROR\:.* \(cdbdist\.c:\d+\)/
+-- m/ERROR\:.* \(cdbdisp\.c:\d+\)/
 -- s///
 
 -- end_matchsubs
