@@ -644,8 +644,8 @@ SELECT id,name, salary FROM employees2 order by id;
 (4 rows)
 
 -- start_matchsubs
--- m/ERROR\:.* \(cdbdisp\.c:\d+\)/
--- s///
+-- m/ERROR\:.* \(SOMEFILE\:SOMEFUNC\)/
+-- s/\(SOMEFILE\:SOMEFUNC\)//
 -- end_matchsubs
 SELECT javatest.transferPeople(1) FROM javatest.test;  -- should error
 ERROR:  function cannot execute on segment because it accesses relation "javatest.employees1"
