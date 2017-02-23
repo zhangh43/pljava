@@ -644,7 +644,7 @@ SELECT id,name, salary FROM employees2 order by id;
 (4 rows)
 
 SELECT javatest.transferPeople(1) FROM javatest.test;  -- should error
-ERROR:  function cannot execute on segment because it accesses relation "javatest.employees1" (functions.c:155)  (seg0 slice1 pljava.pivotal.io:40000 pid=15391) (cdbdisp.c:1326)
+ERROR:  function cannot execute on segment because it accesses relation "javatest.employees1"  (seg0 slice1 pljava.pivotal.io:40000 pid=15391) (cdbdisp.c:1326)
 DETAIL:  SQL statement "SELECT id, name, salary FROM employees1 WHERE salary > $1"
 select javatest.maxFromSetReturnExample(2,10);
  maxfromsetreturnexample 
