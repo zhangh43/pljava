@@ -21,4 +21,6 @@ RUN cd /tmp && \
     ln -s /usr/local/apache-maven-3.2.5 /usr/local/maven && \
     rm -f apache-maven-3.2.5-bin.tar.gz
 
+RUN localedef -v -c -i en_US -f UTF-8 en_US.UTF-8 && return 0
+
 ENV PATH=/usr/local/maven/bin:/usr/local/curl/bin:$PATH
