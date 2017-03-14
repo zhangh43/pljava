@@ -1,4 +1,5 @@
 \c pljava_test pljava_test
+set TIMEZONE=UTC;
 set search_path = javatest, public;
 set client_min_messages = "info";
 -- org.postgresql.pljava.example.Parameters
@@ -35,37 +36,37 @@ SELECT * FROM javatest.print('2016-01-01'::date);
 SELECT javatest.print('12:34:56-00'::time);
        print        
 --------------------
- 20:34:56 UTC +0000
+ 12:34:56 UTC +0000
 (1 row)
 
 SELECT javatest.print('12:34:56-00'::time) FROM javatest.test;
        print        
 --------------------
- 20:34:56 UTC +0000
+ 12:34:56 UTC +0000
 (1 row)
 
 SELECT * FROM javatest.print('12:34:56-00'::time);
        print        
 --------------------
- 20:34:56 UTC +0000
+ 12:34:56 UTC +0000
 (1 row)
 
 SELECT javatest.print('2016-02-14 08:09:10'::timestamp);
                   print                   
 ------------------------------------------
- Sunday, February 14, 2016 4:09:10 PM UTC
+ Sunday, February 14, 2016 8:09:10 AM UTC 
 (1 row)
 
 SELECT javatest.print('2016-02-14 08:09:10'::timestamp) FROM javatest.test;
                   print                   
 ------------------------------------------
- Sunday, February 14, 2016 4:09:10 PM UTC
+ Sunday, February 14, 2016 8:09:10 AM UTC
 (1 row)
 
 SELECT * FROM javatest.print('2016-02-14 08:09:10'::timestamp);
                   print                   
 ------------------------------------------
- Sunday, February 14, 2016 4:09:10 PM UTC
+ Sunday, February 14, 2016 8:09:10 AM UTC
 (1 row)
 
  

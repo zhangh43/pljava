@@ -1,5 +1,5 @@
 \c pljava_test pljava_test
-
+set TIMEZONE=UTC;
 set search_path = javatest, public;
 set client_min_messages = "info";
 
