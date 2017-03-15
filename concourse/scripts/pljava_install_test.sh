@@ -18,6 +18,8 @@ rm -rf $TMPDIR
 cp -r pljava_src $TMPDIR
 cd $TMPDIR
 if [ "$OSVER" == "suse11" ]; then
-    sed -i 's/UTC/GMT/g' /tmp/localplccopy/gpdb/tests/expected/pljava_test.out
+#  suse outputs the time using GMT redhat uses UTC, added spaces to not
+#  change TIMEZONE=UTC in the expected file
+    sed -i 's/ UTC/ GMT/g' /tmp/localplccopy/gpdb/tests/expected/pljava_test.out
 fi
 make targetcheck || exit 1
