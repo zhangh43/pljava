@@ -18,4 +18,4 @@ run:
   path: pljava_src/concourse/scripts/gpdb_build.sh
   args:
     - centos6
-    - rhel5_x86_64
+    - rhel6_x86_64
