@@ -1,0 +1,19 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pivotaldata/pljava_centos7_ci
+    tag: 'latest'
+
+inputs:
+  - name: bin_gpdb
+  - name: pljava_src
+
+outputs:
+  - name: m2repository_centos7
+
+run:
+  path: pljava_src/concourse/scripts/prepare_mvn.sh
+params:
+  OSVER:
