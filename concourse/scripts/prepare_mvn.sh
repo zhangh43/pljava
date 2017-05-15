@@ -19,5 +19,5 @@ make
 mvn dependency:go-offline
 popd
 
-source pljava_src/concourse/scripts/mvn_scripts.sh
+source pljava_src/concourse/scripts/mvn_utils.sh
 mvn_repo_save $OSVER

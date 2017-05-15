@@ -15,5 +15,5 @@ mvn_repo_save() {
     rm -rf repository/org/postgresql
     tar zcvf m2repository_$1.tar.gz ./repository
     popd
-    cp ~/.m2/m2repository_$1.tar.gz m2repository_$1
+    cp ~/.m2/m2repository_$1.tar.gz m2repository
 }
