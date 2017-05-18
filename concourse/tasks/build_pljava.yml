@@ -1,0 +1,14 @@
+platform: linux
+
+inputs:
+  - name: bin_gpdb
+  - name: pljava_src
+  - name: m2repository
+
+outputs:
+  - name: plr_gppkg
+
+run:
+  path: pljava_src/concourse/scripts/build_pljava.sh
+params:
+  OSVER:
