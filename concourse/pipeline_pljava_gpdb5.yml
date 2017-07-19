@@ -1,0 +1,360 @@
+groups:
+- name: PL/Java
+  jobs:
+    - pljava_mvn_prepare
+    - pljava_centos6_build
+    - pljava_centos7_build
+    - pljava_sles11_build
+    - pljava_centos6_test
+    - pljava_centos7_test
+    - pljava_sles11_test
+
+## ======================================================================
+## resources
+## ======================================================================
+resources:
+
+## Repositories
+- name: gpdb_src
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/greenplum-db/gpdb.git
+    tag_filter: 5.*
+
+## RHEL6 Resources
+- name: bin_gpdb_centos6
+  type: s3
+  source:
+    access_key_id: {{bucket-access-key-id}}
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    secret_access_key: {{bucket-secret-access-key}}
+    versioned_file: bin_gpdb_centos6/bin_gpdb.tar.gz
+
+## RHEL7 Resources
+- name: bin_gpdb_centos7
+  type: s3
+  source:
+    access_key_id: {{bucket-access-key-id}}
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    secret_access_key: {{bucket-secret-access-key}}
+    versioned_file: bin_gpdb_centos7/bin_gpdb.tar.gz
+
+## SLES11 Resources
+- name: bin_gpdb_sles11
+  type: s3
+  source:
+    access_key_id: {{bucket-access-key-id}}
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    secret_access_key: {{bucket-secret-access-key}}
+    versioned_file: bin_gpdb_sles11/bin_gpdb.tar.gz
+
+## PL/Java
+##
+
+- name: pljava_centos7_img
+  type: docker-image
+  source:
+    repository: pivotaldata/pljava_centos7_ci
+    tag: 'latest'
+
+- name: pljava_centos6_img
+  type: docker-image
+  source:
+    repository: pivotaldata/pljava_centos6_ci
+    tag: 'latest'
+
+- name: pljava_sles11_img
+  type: docker-image
+  source:
+    repository: pivotaldata/plc_gpdb_suse11sp4
+    tag: 'latest'
+
+- name: pljava_src
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/greenplum-db/pljava.git
+
+- name: m2repository_centos7
+  type: s3
+  source:
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
+    versioned_file: gppkg/pljava/mvn/m2repository_centos7.tar.gz
+
+- name: m2repository_centos6
+  type: s3
+  source:
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
+    versioned_file: gppkg/pljava/mvn/m2repository_centos6.tar.gz
+
+- name: m2repository_suse11
+  type: s3
+  source:
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
+    versioned_file: gppkg/pljava/mvn/m2repository_suse11.tar.gz
+
+- name: pljava_gpdb_centos6_build_untest
+  type: s3
+  source:
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
+    regexp: gppkg/pljava/centos6/pljava-(.*)-untest.gppkg
+
+- name: pljava_gpdb_centos7_build_untest
+  type: s3
+  source:
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
+    regexp: gppkg/pljava/centos7/pljava-(.*)-untest.gppkg
+
+- name: pljava_gpdb_sles11_build_untest
+  type: s3
+  source:
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
+    regexp: gppkg/pljava/sles11/pljava-(.*)-untest.gppkg
+
+- name: pljava_gpdb_centos6_build
+  type: s3
+  source:
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
+    regexp: gppkg/pljava/centos6/pljava-(.*).gppkg
+
+- name: pljava_gpdb_centos7_build
+  type: s3
+  source:
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
+    regexp: gppkg/pljava/centos7/pljava-(.*).gppkg
+
+- name: pljava_gpdb_sles11_build
+  type: s3
+  source:
+    bucket: {{bucket-name}}
+    region_name: {{aws-region}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
+    regexp: gppkg/pljava/sles11/pljava-(.*).gppkg
+
+
+jobs:
+## PL/Java Jobs
+##
+
+- name: pljava_mvn_prepare
+  plan:
+  - aggregate:
+    - get: gpdb_src
+    - get: pljava_src
+      trigger: true
+    - get: bin_gpdb_centos7
+    - get: bin_gpdb_centos6
+    - get: bin_gpdb_sles11
+    - get: pljava_centos7_img
+    - get: pljava_centos6_img
+    - get: pljava_sles11_img
+  - aggregate:
+    - task: prepare_mvn_centos7
+      file: pljava_src/concourse/tasks/prepare_mvn.yml
+      image: pljava_centos7_img
+      input_mapping:
+        bin_gpdb: bin_gpdb_centos7
+      output_mapping:
+        m2repository: m2repository_centos7
+      params:
+        OSVER: centos7
+    - task: prepare_mvn_centos6
+      file: pljava_src/concourse/tasks/prepare_mvn.yml
+      image: pljava_centos6_img
+      input_mapping:
+        bin_gpdb: bin_gpdb_centos6
+      output_mapping:
+        m2repository: m2repository_centos6
+      params:
+        OSVER: centos6
+    - task: prepare_mvn_suse11
+      file: pljava_src/concourse/tasks/prepare_mvn.yml
+      image: pljava_sles11_img
+      input_mapping:
+        bin_gpdb: bin_gpdb_sles11
+      output_mapping:
+        m2repository: m2repository_suse11
+      params:
+        OSVER: suse11
+  - aggregate:
+    - put: m2repository_centos7
+      params:
+        file: m2repository_centos7/m2repository_centos7.tar.gz
+    - put: m2repository_centos6
+      params:
+        file: m2repository_centos6/m2repository_centos6.tar.gz
+    - put: m2repository_suse11
+      params:
+        file: m2repository_suse11/m2repository_suse11.tar.gz
+
+- name: pljava_centos7_build
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_mvn_prepare]
+    - get: m2repository
+      resource: m2repository_centos7
+      passed: [pljava_mvn_prepare]
+    - get: bin_gpdb
+      resource: bin_gpdb_centos7
+      passed: [pljava_mvn_prepare]
+      trigger: true
+    - get: pljava_centos7_img
+  - aggregate:
+    - task: pljava_gpdb_build
+      file: pljava_src/concourse/tasks/build_pljava.yml
+      image: pljava_centos7_img
+      params:
+        OSVER: centos7
+  - aggregate:
+    - put: pljava_gpdb_centos7_build_untest
+      params:
+        file: pljava_gppkg/pljava-*-untest.gppkg
+
+- name: pljava_centos6_build
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_mvn_prepare]
+    - get: m2repository
+      resource: m2repository_centos6
+      passed: [pljava_mvn_prepare]
+    - get: bin_gpdb
+      resource: bin_gpdb_centos6
+      passed: [pljava_mvn_prepare]
+      trigger: true
+    - get: pljava_centos6_img
+  - aggregate:
+    - task: pljava_gpdb_build
+      file: pljava_src/concourse/tasks/build_pljava.yml
+      image: pljava_centos6_img
+      params:
+        OSVER: centos6
+  - aggregate:
+    - put: pljava_gpdb_centos6_build_untest
+      params:
+        file: pljava_gppkg/pljava-*-untest.gppkg
+
+- name: pljava_sles11_build
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_mvn_prepare]
+    - get: m2repository
+      resource: m2repository_suse11
+      passed: [pljava_mvn_prepare]
+    - get: bin_gpdb
+      resource: bin_gpdb_sles11
+      passed: [pljava_mvn_prepare]
+      trigger: true
+    - get: pljava_sles11_img
+  - aggregate:
+    - task: pljava_gpdb_build
+      file: pljava_src/concourse/tasks/build_pljava.yml
+      image: pljava_sles11_img
+      params:
+        OSVER: suse11
+  - aggregate:
+    - put: pljava_gpdb_sles11_build_untest
+      params:
+        file: pljava_gppkg/pljava-*-untest.gppkg
+
+- name: pljava_centos7_test
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_centos7_build]
+    - get: pljava_bin
+      resource: pljava_gpdb_centos7_build_untest
+      passed: [pljava_centos7_build]
+      trigger: true
+    - get: bin_gpdb
+      resource: bin_gpdb_centos7
+      passed: [pljava_centos7_build]
+  - aggregate:
+    - task: test_pljava
+      file: pljava_src/concourse/tasks/test_pljava.yml
+      params:
+        OSVER: centos7
+  - aggregate:
+    - put: pljava_gpdb_centos7_build
+      params:
+        file: pljava_gppkg/pljava-*.gppkg
+
+- name: pljava_centos6_test
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_centos6_build]
+    - get: pljava_bin
+      resource: pljava_gpdb_centos6_build
+      trigger: true
+      passed: [pljava_centos6_build]
+    - get: bin_gpdb
+      resource: bin_gpdb_centos6
+      passed: [pljava_centos6_build]
+    - get: pljava_centos6_img
+  - aggregate:
+    - task: test_pljava
+      file: pljava_src/concourse/tasks/test_pljava.yml
+      image: pljava_centos6_img
+      params:
+        OSVER: centos6
+  - aggregate:
+    - put: pljava_gpdb_centos7_build
+      params:
+        file: pljava_gppkg/pljava-*.gppkg
+
+- name: pljava_sles11_test
+  plan:
+  - aggregate:
+    - get: pljava_src
+      passed: [pljava_sles11_build]
+    - get: pljava_bin
+      resource: pljava_gpdb_sles11_build
+      trigger: true
+      passed: [pljava_sles11_build]
+    - get: bin_gpdb
+      resource: bin_gpdb_sles11
+      passed: [pljava_sles11_build]
+    - get: pljava_sles11_img
+  - aggregate:
+    - task: test_pljava
+      file: pljava_src/concourse/tasks/test_pljava.yml
+      image: pljava_sles11_img
+      params:
+        OSVER: suse11
+  - aggregate:
+    - put: pljava_gpdb_centos7_build
+      params:
+        file: pljava_gppkg/pljava-*.gppkg
+

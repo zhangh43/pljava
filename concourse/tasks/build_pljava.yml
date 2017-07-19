@@ -6,7 +6,7 @@ inputs:
   - name: m2repository
 
 outputs:
-  - name: plr_gppkg
+  - name: pljava_gppkg
 
 run:
   path: pljava_src/concourse/scripts/build_pljava.sh

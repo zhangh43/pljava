@@ -43,6 +43,10 @@ if [ $RETCODE -ne 0 ]; then
     cat $TMPDIR/gpdb/tests/results/pljava_functions.out
     cat $TMPDIR/gpdb/tests/results/pljava_test.out
 else
+    mkdir -p pljava_gppkg
+    ls pljava_bin/pljava-*-untest.gppkg | sed 's/-untest.gppkg/.gppkg/g' | xargs cp pljava_bin/pljava-*-untest.gppkg
+    rm pljava_bin/pljava-*-untest.gppkg
+    cp pljava_bin/pljava-*.gppkg pljava_gppkg
     echo "PL/Java test succeeded"
 fi
 

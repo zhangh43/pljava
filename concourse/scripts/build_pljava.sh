@@ -20,7 +20,9 @@ make clean
 make
 pushd gpdb/packaging
 make cleanall && make
+ls pljava-*.gppkg | sed 's/.gppkg/-untest.gppkg/g' | xargs cp pljava-*.gppkg
 popd
 popd
 
-cp pljava_src/gpdb/packaging/pljava-*.gppkg plr_gppkg
+mkdir -p pljava_gppkg
+cp pljava_src/gpdb/packaging/pljava-*-untest.gppkg pljava_gppkg
