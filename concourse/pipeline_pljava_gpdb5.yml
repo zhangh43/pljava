@@ -30,7 +30,7 @@ resources:
     bucket: {{bucket-name}}
     region_name: {{aws-region}}
     secret_access_key: {{bucket-secret-access-key}}
-    versioned_file: bin_gpdb_centos6/bin_gpdb.tar.gz
+    versioned_file: bin_gpdb_centos/bin_gpdb.tar.gz
 
 ## RHEL7 Resources
 - name: bin_gpdb_centos7
@@ -299,10 +299,11 @@ jobs:
       trigger: true
     - get: bin_gpdb
       resource: bin_gpdb_centos7
-      passed: [pljava_centos7_build]
+    - get: pljava_centos7_img
   - aggregate:
     - task: test_pljava
       file: pljava_src/concourse/tasks/test_pljava.yml
+      image: pljava_centos6_img
       params:
         OSVER: centos7
   - aggregate:
@@ -316,12 +317,11 @@ jobs:
     - get: pljava_src
       passed: [pljava_centos6_build]
     - get: pljava_bin
-      resource: pljava_gpdb_centos6_build
+      resource: pljava_gpdb_centos6_build_untest
       trigger: true
       passed: [pljava_centos6_build]
     - get: bin_gpdb
       resource: bin_gpdb_centos6
-      passed: [pljava_centos6_build]
     - get: pljava_centos6_img
   - aggregate:
     - task: test_pljava
@@ -330,7 +330,7 @@ jobs:
       params:
         OSVER: centos6
   - aggregate:
-    - put: pljava_gpdb_centos7_build
+    - put: pljava_gpdb_centos6_build
       params:
         file: pljava_gppkg/pljava-*.gppkg
 
@@ -340,12 +340,11 @@ jobs:
     - get: pljava_src
       passed: [pljava_sles11_build]
     - get: pljava_bin
-      resource: pljava_gpdb_sles11_build
+      resource: pljava_gpdb_sles11_build_untest
       trigger: true
       passed: [pljava_sles11_build]
     - get: bin_gpdb
       resource: bin_gpdb_sles11
-      passed: [pljava_sles11_build]
     - get: pljava_sles11_img
   - aggregate:
     - task: test_pljava
@@ -354,7 +353,7 @@ jobs:
       params:
         OSVER: suse11
   - aggregate:
-    - put: pljava_gpdb_centos7_build
+    - put: pljava_gpdb_sles11_build
       params:
         file: pljava_gppkg/pljava-*.gppkg
 
