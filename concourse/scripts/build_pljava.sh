@@ -9,7 +9,7 @@ if [ "$OSVER" == "centos5" ]; then
 fi
 
 mkdir /usr/local/greenplum-db-devel
-tar zxvf bin_gpdb/bin_gpdb.tar.gz -C /usr/local/greenplum-db-devel
+tar zxf bin_gpdb/bin_gpdb.tar.gz -C /usr/local/greenplum-db-devel
 source /usr/local/greenplum-db-devel/greenplum_path.sh
 
 source pljava_src/concourse/scripts/mvn_utils.sh
