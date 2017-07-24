@@ -12,7 +12,8 @@ fi
 # Put GPDB binaries in place to get pg_config
 mkdir /usr/local/greenplum-db-devel
 tar zxvf bin_gpdb/bin_gpdb.tar.gz -C /usr/local/greenplum-db-devel
-source /usr/local/greenplum-db-devel/greenplum_path.sh || exit 1
+#source /usr/local/greenplum-db-devel/greenplum_path.sh || exit 1
+export GPHOME=/usr/local/greenplum-db-devel
 
 # GPDB Installation Preparation
 mkdir /data
