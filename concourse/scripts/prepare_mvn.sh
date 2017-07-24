@@ -21,6 +21,8 @@ if [ "$OSVER" == "suse11" ]; then
     popd
     mvn -v
     [ '$?' ne '0' ] && exit 1
+    export JAVA_HOME=$(dirname $(dirname $(readlink -f /usr/bin/java)))../
+    export PATH=$JAVA_HOME/bin:$PATH
     echo  $(readlink -f /usr/bin/java | sed "s:bin/java::")lib/amd64/server  > /etc/ld.so.conf.d/jvm.conf && ldconfig
 fi
 
