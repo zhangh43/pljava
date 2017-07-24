@@ -16,7 +16,8 @@ source /usr/local/greenplum-db-devel/greenplum_path.sh || exit 1
 
 if [ "$OSVER" == "suse11" ]; then
     export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/lib:/lib64
-    zypper addrepo http://download.opensuse.org/distribution/11.4/repo/oss/ oss
+    zypper addrepo --no-gpgcheck http://download.opensuse.org/distribution/11.4/repo/oss/ oss
+    zypper refresh
     zypper --no-gpg-checks -n install libopenssl-devel openssl
 fi
 

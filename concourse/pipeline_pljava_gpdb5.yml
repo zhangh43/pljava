@@ -70,8 +70,8 @@ resources:
 - name: pljava_sles11_img
   type: docker-image
   source:
-    repository: pivotaldata/sles-gpdb-dev
-    tag: '11-beta'
+    repository: pivotaldata/plc_gpdb_suse11sp4
+    tag: 'latest'
 
 - name: pljava_src
   type: git
