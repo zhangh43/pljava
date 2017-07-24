@@ -224,10 +224,10 @@ jobs:
     - get: m2repository
       resource: m2repository_centos7
       passed: [pljava_mvn_prepare]
+      trigger: true
     - get: bin_gpdb
       resource: bin_gpdb_centos7
       passed: [pljava_mvn_prepare]
-      trigger: true
     - get: pljava_centos7_img
   - aggregate:
     - task: pljava_gpdb_build
@@ -248,10 +248,10 @@ jobs:
     - get: m2repository
       resource: m2repository_centos6
       passed: [pljava_mvn_prepare]
+      trigger: true
     - get: bin_gpdb
       resource: bin_gpdb_centos6
       passed: [pljava_mvn_prepare]
-      trigger: true
     - get: pljava_centos6_img
   - aggregate:
     - task: pljava_gpdb_build
@@ -272,10 +272,10 @@ jobs:
     - get: m2repository
       resource: m2repository_suse11
       passed: [pljava_mvn_prepare]
+      trigger: true
     - get: bin_gpdb
       resource: bin_gpdb_sles11
       passed: [pljava_mvn_prepare]
-      trigger: true
     - get: pljava_sles11_img
   - aggregate:
     - task: pljava_gpdb_build
