@@ -15,6 +15,12 @@ source /usr/local/greenplum-db-devel/greenplum_path.sh
 source pljava_src/concourse/scripts/mvn_utils.sh
 mvn_repo_install $OSVER
 
+if [ "$OSVER" == "suse11" ]; then
+    export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/lib:/lib64
+    zypper addrepo http://download.opensuse.org/distribution/11.4/repo/oss/ oss
+    zypper --no-gpg-checks -n install libopenssl-devel openssl
+fi
+
 pushd pljava_src
 make clean
 make
