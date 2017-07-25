@@ -52,10 +52,6 @@ tar zxf bin_gpdb/bin_gpdb.tar.gz -C /usr/local/greenplum-db-devel
 source /usr/local/greenplum-db-devel/greenplum_path.sh || exit 1
 
 if [ "$OSVER" == "suse11" ]; then
-    #export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/lib:/lib64
-    #zypper addrepo --no-gpgcheck http://download.opensuse.org/distribution/11.4/repo/oss/ oss
-    #zypper refresh
-    #zypper --no-gpg-checks -n install libopenssl-devel openssl
     install_openssl
 fi
 
@@ -89,8 +85,6 @@ if [ $RETCODE -ne 0 ]; then
     cat $TMPDIR/gpdb/tests/results/pljava_test.out
 else
     mkdir -p pljava_gppkg
-    ls pljava_bin/pljava-*-untest.gppkg | sed 's/-untest.gppkg/.gppkg/g' | xargs cp pljava_bin/pljava-*-untest.gppkg
-    rm pljava_bin/pljava-*-untest.gppkg
     cp pljava_bin/pljava-*.gppkg pljava_gppkg
     echo "PL/Java test succeeded"
 fi

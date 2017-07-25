@@ -113,7 +113,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    regexp: gppkg/pljava/centos6/pljava-(.*)-untest.gppkg
+    regexp: gppkg/pljava/centos6/builds/pljava-(.*).gppkg
 
 - name: pljava_gpdb_centos7_build_untest
   type: s3
@@ -122,7 +122,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    regexp: gppkg/pljava/centos7/pljava-(.*)-untest.gppkg
+    regexp: gppkg/pljava/centos7/builds/pljava-(.*).gppkg
 
 - name: pljava_gpdb_sles11_build_untest
   type: s3
@@ -131,7 +131,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    regexp: gppkg/pljava/sles11/pljava-(.*)-untest.gppkg
+    regexp: gppkg/pljava/sles11/builds/pljava-(.*).gppkg
 
 - name: pljava_gpdb_centos6_build
   type: s3
@@ -238,7 +238,7 @@ jobs:
   - aggregate:
     - put: pljava_gpdb_centos7_build_untest
       params:
-        file: pljava_gppkg/pljava-*-untest.gppkg
+        file: pljava_gppkg/pljava-*.gppkg
 
 - name: pljava_centos6_build
   plan:
@@ -262,7 +262,7 @@ jobs:
   - aggregate:
     - put: pljava_gpdb_centos6_build_untest
       params:
-        file: pljava_gppkg/pljava-*-untest.gppkg
+        file: pljava_gppkg/pljava-*.gppkg
 
 - name: pljava_sles11_build
   plan:
@@ -286,7 +286,7 @@ jobs:
   - aggregate:
     - put: pljava_gpdb_sles11_build_untest
       params:
-        file: pljava_gppkg/pljava-*-untest.gppkg
+        file: pljava_gppkg/pljava-*.gppkg
 
 - name: pljava_centos7_test
   plan:
