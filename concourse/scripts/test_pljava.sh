@@ -5,6 +5,43 @@ set -x
 WORKDIR=`pwd`
 TMPDIR=/tmp/localplccopy
 
+function install_openssl(){
+    pushd /opt
+    wget --no-check-certificate https://www.openssl.org/source/openssl-1.0.2l.tar.gz
+    wget --no-check-certificate https://www.openssl.org/source/openssl-fips-2.0.16.tar.gz
+    wget --no-check-certificate https://mirror.aarnet.edu.au/pub/OpenBSD/OpenSSH/portable/openssh-6.9p1.tar.gz
+    tar -zxf openssl-1.0.2l.tar.gz
+    tar -zxf openssl-fips-2.0.16.tar.gz
+    tar -zxf openssh-6.9p1.tar.gz
+
+    pushd openssl-fips-2.0.16
+    ./config
+    make && make install
+    popd
+    pushd openssl-1.0.2l
+    ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl/ssl shared fips enable-ssl2
+    make depend
+    make && make install
+    popd
+
+    cp -r /usr/local/ssl/fips-2.0/include/openssl/fips*.h /usr/local/ssl/include/openssl/
+    rm -r /usr/local/ssl/fips-2.0
+
+    rpm -qa | grep openssh | rpm -e {} --nodeps
+    pushd openssh-6.9p1
+    ./configure --prefix=/usr/ --sysconfdir=/etc/ssh --with-zlib --with-ssl-dir=/usr/local/ssl --with-md5-passwords mandir=/usr/share/man
+    make && make install
+    cp contrib/suse/rc.sshd /etc/init.d/sshd
+    chmod +x /etc/init.d/sshd
+    cp -f -r sshd_config /etc/ssh/sshd_config
+    cp -f -r sshd /usr/sbin/sshd
+    cp -f -r ssh /usr/bin/ssh
+    /etc/init.d/sshd restart
+    popd
+
+    popd
+
+}
 if [ "$OSVER" == "centos5" ]; then
     rm -f /usr/bin/python && ln -s /usr/bin/python26 /usr/bin/python
 fi
@@ -15,10 +52,11 @@ tar zxf bin_gpdb/bin_gpdb.tar.gz -C /usr/local/greenplum-db-devel
 source /usr/local/greenplum-db-devel/greenplum_path.sh || exit 1
 
 if [ "$OSVER" == "suse11" ]; then
-    export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/lib:/lib64
-    zypper addrepo --no-gpgcheck http://download.opensuse.org/distribution/11.4/repo/oss/ oss
-    zypper refresh
-    zypper --no-gpg-checks -n install libopenssl-devel openssl
+    #export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/lib:/lib64
+    #zypper addrepo --no-gpgcheck http://download.opensuse.org/distribution/11.4/repo/oss/ oss
+    #zypper refresh
+    #zypper --no-gpg-checks -n install libopenssl-devel openssl
+    install_openssl
 fi
 
 # GPDB Installation Preparation
