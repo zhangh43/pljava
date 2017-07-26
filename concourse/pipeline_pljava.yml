@@ -285,7 +285,7 @@ jobs:
       output_mapping:
         m2repository: m2repository_sles11
       params:
-        OSVER: sles11
+        OSVER: suse11
   - aggregate:
     - put: m2repository_centos5
       params:
@@ -336,7 +336,7 @@ jobs:
       file: pljava_src/concourse/tasks/build_pljava.yml
       image: pljava_sles11_img
       params:
-        OSVER: sles11
+        OSVER: suse11
   - aggregate:
     - put: pljava_gpdb4_sles11_build
       params:
@@ -382,7 +382,7 @@ jobs:
       file: pljava_src/concourse/tasks/test_pljava.yml
       image: pljava_sles11_img
       params:
-        OSVER: sles11
+        OSVER: suse11
   - aggregate:
     - put: pljava_gpdb4_sles11_release
       params:
@@ -428,7 +428,7 @@ jobs:
       output_mapping:
         m2repository: m2repository_sles11
       params:
-        OSVER: sles11
+        OSVER: suse11
   - aggregate:
     - put: m2repository_centos7
       params:
@@ -506,7 +506,7 @@ jobs:
       file: pljava_src/concourse/tasks/build_pljava.yml
       image: pljava_sles11_img
       params:
-        OSVER: sles11
+        OSVER: suse11
   - aggregate:
     - put: pljava_gpdb_sles11_build
       params:
@@ -575,7 +575,7 @@ jobs:
       file: pljava_src/concourse/tasks/test_pljava.yml
       image: pljava_sles11_img
       params:
-        OSVER: sles11
+        OSVER: suse11
   - aggregate:
     - put: pljava_gpdb_sles11_release
       params:

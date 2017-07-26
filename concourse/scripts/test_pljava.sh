@@ -51,7 +51,7 @@ mkdir /usr/local/greenplum-db-devel
 tar zxf bin_gpdb/bin_gpdb.tar.gz -C /usr/local/greenplum-db-devel
 source /usr/local/greenplum-db-devel/greenplum_path.sh || exit 1
 
-if [ "$OSVER" == "sles11" ]; then
+if [ "$OSVER" == "suse11" ]; then
     install_openssl
 fi
 
