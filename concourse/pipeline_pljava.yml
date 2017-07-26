@@ -164,7 +164,7 @@ resources:
 - name: pljava_sles11_img
   type: docker-image
   source:
-    repository: pivotaldata/plc_gpdb_sles11sp4
+    repository: pivotaldata/plc_gpdb_suse11sp4
     tag: 'latest'
 
 - name: pljava_src
