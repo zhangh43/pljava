@@ -82,7 +82,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    versioned_file: build/gpdb4/pljava/mvn/m2repository_sles11.tar.gz
+    versioned_file: build/gpdb4/pljava/mvn/m2repository_suse11.tar.gz
 
 - name: pljava_gpdb4_centos5_build
   type: s3
@@ -198,7 +198,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    versioned_file: build/gpdb5/pljava/mvn/m2repository_sles11.tar.gz
+    versioned_file: build/gpdb5/pljava/mvn/m2repository_suse11.tar.gz
 
 - name: pljava_gpdb_centos6_build
   type: s3
@@ -292,7 +292,7 @@ jobs:
         file: m2repository_centos5/m2repository_centos5.tar.gz
     - put: m2repository_sles11_gpdb4
       params:
-        file: m2repository_sles11/m2repository_sles11.tar.gz
+        file: m2repository_sles11/m2repository_suse11.tar.gz
 
 - name: pljava_gpdb4_centos5_build
   plan:
@@ -438,7 +438,7 @@ jobs:
         file: m2repository_centos6/m2repository_centos6.tar.gz
     - put: m2repository_sles11
       params:
-        file: m2repository_sles11/m2repository_sles11.tar.gz
+        file: m2repository_sles11/m2repository_suse11.tar.gz
 
 - name: pljava_centos7_build
   plan:
