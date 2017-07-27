@@ -5,11 +5,12 @@ jobs:
   plan:
   - timeout: 3h
     do:
-    - get: pljava
+    - get: toolsmiths-images
+      trigger: true
     - put: centos-5-untested-resource
       params:
         build: "."
-        dockerfile: pljava/concourse/images/images/centos/5/Dockerfile
+        dockerfile: toolsmiths-images/images/centos/5/Dockerfile
     - task: image-testing
       config:
         platform: linux
@@ -18,33 +19,34 @@ jobs:
           source:
             username: {{docker-username}}
             password: {{docker-password}}
-            repository: pivotaldata/pljava_centos
+            repository: pivotaldata/centos
             tag: 5-untested
         inputs:
         - name: toolsmiths-images
         run:
-          path: pljava/concourse/images/images/centos/5/test.sh
+          path: toolsmiths-images/images/centos/5/test.sh
     - put: centos-5-resource
       params:
-        pull_repository: pivotaldata/pljava_centos
+        pull_repository: pivotaldata/centos
         pull_tag: 5-untested
 resources:
-- name: pljava
+- name: toolsmiths-images
   type: git
   source:
-    uri: https://github.com/greenplum-db/pljava.git
-    branch: docker_image_pipeline
+    uri: git@github.com:Pivotal-DataFabric/toolsmiths-images.git
+    branch: master
+    private_key: {{toolsmiths-images-repo-key}}
 - name: centos-5-untested-resource
   type: docker-image
   source:
     username: {{docker-username}}
     password: {{docker-password}}
-    repository: pivotaldata/pljava_centos
+    repository: pivotaldata/centos
     tag: 5-untested
 - name: centos-5-resource
   type: docker-image
   source:
     username: {{docker-username}}
     password: {{docker-password}}
-    repository: pivotaldata/pljava_centos
+    repository: pivotaldata/centos
     tag: '5'

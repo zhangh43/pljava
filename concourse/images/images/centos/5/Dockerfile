@@ -1,5 +1,15 @@
 FROM centos:5.11
 
+# Resolves a warning: rpmts_HdrFromFdno: Header V3 DSA signature: NOKEY, key ID e8562897
+RUN rpm --import http://vault.centos.org/RPM-GPG-KEY-CentOS-5
+
+# Replace mirrorlist entries with their vault.centos.org equivalents for Centos 5.11.
+RUN sed -i \
+  -e '\,^mirrorlist=http://mirrorlist.centos.org/?release=[$]releasever,s,^,#,;' \
+  -e 's,^#baseurl=http://mirror.centos.org/centos/[$]releasever/,baseurl=http://vault.centos.org/5.11/,' \
+  /etc/yum.repos.d/CentOS-Base.repo \
+  /etc/yum.repos.d/libselinux.repo
+
 # Install dependencies
 RUN yum -y groupinstall "Development tools"
 RUN yum -y install epel-release ed wget coreutils sed psmisc
