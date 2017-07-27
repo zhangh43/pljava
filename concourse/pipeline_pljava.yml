@@ -170,7 +170,7 @@ resources:
 - name: pljava_src
   type: git
   source:
-    branch: gpdb5_pljava
+    branch: gpdb5_oss1.5_pv1.4
     uri: https://github.com/greenplum-db/pljava.git
 
 - name: m2repository_centos7
