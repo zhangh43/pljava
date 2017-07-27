@@ -313,6 +313,7 @@ jobs:
       image: pljava_centos5_img
       params:
         OSVER: centos5
+        PL_GP_VERSION: "4.3"
   - aggregate:
     - put: pljava_gpdb4_centos5_build
       params:
@@ -337,6 +338,7 @@ jobs:
       image: pljava_sles11_img
       params:
         OSVER: suse11
+        PL_GP_VERSION: "4.3"
   - aggregate:
     - put: pljava_gpdb4_sles11_build
       params:
@@ -459,6 +461,7 @@ jobs:
       image: pljava_centos7_img
       params:
         OSVER: centos7
+        PL_GP_VERSION: "5.0"
   - aggregate:
     - put: pljava_gpdb_centos7_build
       params:
@@ -483,6 +486,7 @@ jobs:
       image: pljava_centos6_img
       params:
         OSVER: centos6
+        PL_GP_VERSION: "5.0"
   - aggregate:
     - put: pljava_gpdb_centos6_build
       params:
@@ -507,6 +511,7 @@ jobs:
       image: pljava_sles11_img
       params:
         OSVER: suse11
+        PL_GP_VERSION: "5.0"
   - aggregate:
     - put: pljava_gpdb_sles11_build
       params:

@@ -19,6 +19,7 @@ pushd pljava_src
 make clean
 make
 pushd gpdb/packaging
+export PL_GP_VERSION=$PL_GP_VERSION
 make cleanall && make
 popd
 popd
