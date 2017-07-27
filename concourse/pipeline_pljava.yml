@@ -109,7 +109,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    regexp: release/gpdb4/pljava-(.*).gppkg
+    regexp: release/gpdb4/pljava/pljava-(.*).gppkg
 
 - name: pljava_gpdb4_sles11_release
   type: s3
@@ -118,7 +118,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    regexp: release/gpdb4/pljava-(.*).gppkg
+    regexp: release/gpdb4/pljava/pljava-(.*).gppkg
 
 ## GPDB5 resource
 ##
@@ -234,7 +234,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    regexp: release/gpdb5/pljava-(.*).gppkg
+    regexp: release/gpdb5/pljava/pljava-(.*).gppkg
 
 - name: pljava_gpdb_centos7_release
   type: s3
@@ -243,7 +243,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    regexp: release/gpdb5/pljava-(.*).gppkg
+    regexp: release/gpdb5/pljava/pljava-(.*).gppkg
 
 - name: pljava_gpdb_sles11_release
   type: s3
@@ -252,7 +252,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    regexp: release/gpdb5/pljava-(.*).gppkg
+    regexp: release/gpdb5/pljava/pljava-(.*).gppkg
 
 
 jobs:
