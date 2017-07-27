@@ -1,0 +1,6 @@
+---
+name: centos-5
+repository: pivotaldata/centos
+tag: '5'
+dependencies:
+  lib: {type: toolsmiths-lib}

@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+require 'yaml'
+
+Dir.chdir(File.dirname(File.dirname(__FILE__)))
+
+ImageYml = ARGV[0]
+ImageDir = File.dirname(ImageYml)
+ImageDesc = YAML.load(IO.read(ImageYml))
+Image = ImageDesc['repository'] + (ImageDesc['tag'] ? (':' + ImageDesc['tag']) : '')
+TestScript = File.join('toolsmiths-images', ImageDir, 'test.sh')
+
+cmd = "docker run -it --rm -v $(pwd):/toolsmiths-images #{Image} #{TestScript}"
+puts "Testing image with command:\n\n#{cmd}\n\n"
+code = system(cmd)
+
+colors = {
+  :red => 31,
+  :green => 32,
+}
+
+color = "\e[" + (code ? colors[:green] : colors[:red]).to_s + "m"
+
+puts "#{color}------\e[0m"
+puts(code ? " #{color}PASS\e[0m" : " #{color}FAIL\e[0m")
+puts "#{color}------\e[0m"

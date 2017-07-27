@@ -1,0 +1,6 @@
+#!/bin/bash
+BIN_DIR=$(cd "$(dirname "$0")"; pwd)
+cd "$BIN_DIR/.."
+echo "Available image definitions:"
+echo ""
+find . -name image.yml

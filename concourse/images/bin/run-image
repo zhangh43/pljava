@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+require 'yaml'
+
+Dir.chdir(File.dirname(File.dirname(__FILE__)))
+
+ImageYml = ARGV[0]
+ImageDir = File.dirname(ImageYml)
+ImageDesc = YAML.load(IO.read(ImageYml))
+Image = ImageDesc['repository'] + (ImageDesc['tag'] ? (':' + ImageDesc['tag']) : '')
+
+cmd = "docker run -it --rm -v $(pwd):/toolsmiths-images #{Image} /bin/bash"
+puts "Running image with command:\n\n#{cmd}\n\n"
+system(cmd)

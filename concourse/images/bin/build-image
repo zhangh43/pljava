@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+require_relative './pipeline_generator.rb'
+require 'yaml'
+require 'fileutils'
+
+Dir.chdir(File.dirname(File.dirname(__FILE__)))
+
+ImageYml = ARGV[0]
+ImageDir = File.dirname(ImageYml)
+Dockerfile = File.join(ImageDir, 'Dockerfile')
+ImageDesc = YAML.load(IO.read(ImageYml))
+Image = ImageDesc['repository'] + (ImageDesc['tag'] ? (':' + ImageDesc['tag']) : '')
+
+def gen_build_args
+  puts "Reading dependencies from #{ImageYml}"
+  arg_str = (ImageDesc['dependencies'] || {}).each_pair.map{|name, dep|
+    "--build-arg #{name}=#{generate_build_arg name, dep}"
+  }.join(' ')
+end
+
+def generate_build_arg(name, dependency)
+  if dependency['type'] == 's3'
+    dep = Dependency.new name, dependency
+    dep_file = 'tmp/dependencies/' + dep.uri_basename
+    if File.exists? dep_file
+      puts "Using local file #{dep_file}"
+    else
+      raise "Missing AWS CLI!" if !system("which aws")
+      puts "Getting file #{dep_file} from S3"
+      if !system("aws s3 cp --source-region #{dep.region_name} #{dep.s3_url} #{dep_file}")
+        raise "Unable to get #{dep_file} from S3! Check credentials?"
+      end
+    end
+    dep_file
+  elsif dependency['type'] == 'toolsmiths-lib'
+    './lib'
+  end
+end
+
+FileUtils.mkdir_p 'tmp/dependencies'
+cmd = "docker build #{gen_build_args} --tag #{Image} --file #{Dockerfile} ."
+puts "Building image with command:\n\n#{cmd}\n\n"
+result = system(cmd)
+exit (result ? 0 : 1)

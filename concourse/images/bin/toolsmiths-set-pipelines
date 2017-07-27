@@ -1,0 +1,22 @@
+#!/bin/bash
+
+PIPELINE_YML=$1
+BIN_DIR="$(cd "$(dirname "$0")"; pwd)"
+cd "$BIN_DIR/.."
+
+if [ -z "$PIPELINE_YML" ]; then
+  PIPELINE_YML=pipeline.generated.yml
+  if git diff --exit-code pipeline.generated.yml > /dev/null ; then
+    bin/generate-pipeline > pipeline.generated.yml
+  fi
+fi
+
+set -x
+fly -t ts set-pipeline -p toolsmiths-images-dockerfiles -c ${PIPELINE_YML} \
+  -l ~/workspace/ci-infrastructure/config/credentials/toolsmiths_images_vars.yml \
+  -l ~/workspace/ci-infrastructure/config/credentials/toolsmiths_pipeline.yml
+
+fly -t ts set-pipeline -p toolsmiths-images-annex -c annex-pipeline.yml \
+  -l ~/workspace/ci-infrastructure/config/credentials/toolsmiths_images_vars.yml \
+  -l ~/workspace/ci-infrastructure/config/credentials/toolsmiths_pipeline.yml \
+  -l ~/workspace/toolsmiths-images/config/gpdb-sles-ami-pipeline-secrets.yml

@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+require 'yaml'
+require_relative './pipeline_generator.rb'
+
+Dir.chdir(File.dirname(File.dirname(__FILE__)))
+
+pipeline_generator = PipelineGenerator.new
+
+Dir['**/image.yml'].each do |image_yml|
+  pipeline_generator.add YAML.load(IO.read(image_yml)), File.dirname(image_yml)
+end
+
+puts pipeline_generator.generate
