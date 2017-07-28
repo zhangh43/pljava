@@ -21,7 +21,7 @@ jobs:
             repository: pivotaldata/pljava_centos
             tag: 5-untested
         inputs:
-        - name: toolsmiths-images
+        - name: pljava
         run:
           path: pljava/concourse/images/images/centos/5/test.sh
     - put: centos-5-resource
