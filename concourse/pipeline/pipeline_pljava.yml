@@ -23,13 +23,19 @@ resources:
     secret_access_key: {{gpdb4-bucket-secret-access-key}}
     versioned_file: bin_gpdb_sles/bin_gpdb.tar.gz
 
+- name: gpdb_src
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/greenplum-db/gpdb.git
+
 - name: pljava_src
   type: git
   source:
-    branch: gpdb4.3_oss1.4_pv1.3
+    branch: gpdb4_release
     uri: https://github.com/greenplum-db/pljava.git
 
-- name: jre_16_tar
+- name: jre
   type: s3
   source:
     bucket: noarch-toolchain-snowflakes
@@ -38,17 +44,17 @@ resources:
     secret_access_key: {{gpdb4-bucket-secret-access-key}}
     versioned_file: jre/jre-1.6.0_32.tgz
 
-- name: pljava_centos5_img
-  type: docker-image
-  source:
-    repository: pivotaldata/pljava_centos5_ci
-    tag: 'latest'
-
 - name: pljava_sles11_img
   type: docker-image
   source:
-    repository: pivotaldata/plc_gpdb_suse11sp4
-    tag: 'latest'
+    repository: pivotaldata/sles-gpdb-dev
+    tag: '11-beta'
+
+- name: pljava_centos5_img
+  type: docker-image
+  source:
+    repository: pivotaldata/centos-gpdb-dev
+    tag: '5'
 
 - name: pljava_gpdb4_centos5_build
   type: s3
@@ -57,7 +63,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    regexp: build/gpdb4/pljava/centos5/pljava-(.*).gppkg
+    versioned_file: build/gpdb4/pljava/centos5/pljava-centos.gppkg
 
 - name: pljava_gpdb4_sles11_build
   type: s3
@@ -66,7 +72,7 @@ resources:
     region_name: {{aws-region}}
     access_key_id: {{bucket-access-key-id}}
     secret_access_key: {{bucket-secret-access-key}}
-    regexp: build/gpdb4/pljava/sles11/pljava-(.*).gppkg
+    versioned_file: build/gpdb4/pljava/sles11/pljava-suse11.gppkg
 
 - name: pljava_gpdb4_centos5_release
   type: s3
@@ -136,13 +142,14 @@ jobs:
   - aggregate:
     - get: pljava_src
       passed: [pljava_gpdb4_centos5_build]
+      trigger: true
     - get: pljava_bin
       resource: pljava_gpdb4_centos5_build
-      trigger: true
       passed: [pljava_gpdb4_centos5_build]
     - get: bin_gpdb
       resource: bin_gpdb4_centos5
     - get: pljava_centos5_img
+    - get: gpdb_src
   - aggregate:
     - task: test_pljava
       file: pljava_src/concourse/tasks/test_pljava.yml
@@ -159,13 +166,14 @@ jobs:
   - aggregate:
     - get: pljava_src
       passed: [pljava_gpdb4_sles11_build]
+      trigger: true
     - get: pljava_bin
       resource: pljava_gpdb4_sles11_build
-      trigger: true
       passed: [pljava_gpdb4_sles11_build]
     - get: bin_gpdb
       resource: bin_gpdb4_sles11
     - get: pljava_sles11_img
+    - get: gpdb_src
   - aggregate:
     - task: test_pljava
       file: pljava_src/concourse/tasks/test_pljava.yml

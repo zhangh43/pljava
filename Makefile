@@ -28,6 +28,8 @@
 #
 export PROJDIR          := $(shell $(SHELL) -c pwd)
 
+export JAVA_HOME
+
 PG_CONFIG = pg_config
 export PGXS := $(shell $(PG_CONFIG) --pgxs)
 export PGSQLSRC := $(dir $(PGXS))..
@@ -103,12 +105,20 @@ test_all: test_%:
 	@$(MAKE) -r -C $(CLASSDIR)/test -f $(PROJDIR)/src/java/test/Makefile \
 	MODULEROOT=$(PROJDIR)/src/java $*
 
+target_test:
+	gpconfig -c pljava_classpath -v '.'
+	sed -i '/.* # PLJAVA.*/d' $(MASTER_DATA_DIRECTORY)/pg_hba.conf
+	echo 'host    all      pljava_test   0.0.0.0/0    trust # PLJAVA' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
+	echo 'local   all      pljava_test                trust # PLJAVA' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
+	gpstop -u
+# cd $(PROJDIR)/gpdb/tests && $(GPHOME)/lib/postgresql/pgxs/src/test/regress/pg_regress --psqldir=$(GPHOME)/bin --dbname=pljava_test --create-role=pljava_test pljava_init pljava_functions pljava_test
+	cd $(PROJDIR)/gpdb/tests && $(GPHOME)/lib/postgresql/pgxs/src/test/regress/pg_regress --psqldir=$(GPHOME)/bin --dbname=pljava_test pljava_init pljava_functions pljava_test
 
 test:
-	@-gpconfig -c pljava_classpath -v \'$(PWD)/build/\'
-	@-echo 'host    all         test                 0.0.0.0/0 trust' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
-	@-echo 'local   all         test                trust' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
-	@-gpstop -ar
+	@gpconfig -c pljava_classpath -v \'$(PWD)/build/\'
+	@echo 'host    all         test                 0.0.0.0/0 trust' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
+	@echo 'local   all         test                trust' >> $(MASTER_DATA_DIRECTORY)/pg_hba.conf
+	@gpstop -ar
 	cd src && \
 	../../../../src/test/regress/pg_regress  --dbname=test --create-role=test pljava 
 

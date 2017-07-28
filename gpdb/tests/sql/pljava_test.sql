@@ -1,28 +1,12 @@
-\c pljava_test pljava_test
 set TIMEZONE=UTC;
 set search_path = javatest, public;
+set pljava_classpath = '/usr/local/greenplum-db-devel/share/postgresql/pljava/examples.jar';
 set client_min_messages = "info";
 
--- org.postgresql.pljava.example.Parameters
+-- org.postgresql.example.Parameters
 
 select abs(extract('epoch' from (current_timestamp - javatest.java_getTimestamp()))::int) <= 2;
 select abs(extract('epoch' from (current_timestamp - javatest.java_getTimestamptz()))::int) <= 2;
-
-SELECT javatest.print('2016-01-01'::date);
-SELECT javatest.print('2016-01-01'::date) FROM javatest.test;
-SELECT * FROM javatest.print('2016-01-01'::date);
-
-SELECT javatest.print('12:34:56-00'::time);
-SELECT javatest.print('12:34:56-00'::time) FROM javatest.test;
-SELECT * FROM javatest.print('12:34:56-00'::time);
-
-SELECT javatest.print('2016-02-14 08:09:10'::timestamp);
-SELECT javatest.print('2016-02-14 08:09:10'::timestamp) FROM javatest.test;
-SELECT * FROM javatest.print('2016-02-14 08:09:10'::timestamp);
- 
-SELECT javatest.print('varchar'::varchar);
-SELECT javatest.print('varchar'::varchar) FROM javatest.test;
-SELECT * FROM javatest.print('varchar'::varchar);
 
 SELECT javatest.print('bytea'::bytea);
 SELECT javatest.print('bytea'::bytea) FROM javatest.test;
@@ -93,7 +77,7 @@ select javatest.countnulls('{1,2,null,3,null,4}'::int[]) FROM javatest.test;
 
 SELECT javatest.java_getSystemProperty('user.language');
 
--- org.postgresql.pljava.example.Security
+-- org.postgresql.example.Security
 
 -- start_matchsubs
 
@@ -102,15 +86,7 @@ SELECT javatest.java_getSystemProperty('user.language');
 
 -- end_matchsubs
 
-/*
- * This function should fail since file system access is
- * prohibited when the language is trusted.
- */
-SELECT javatest.create_temp_file_trusted();
-SELECT javatest.create_temp_file_trusted() FROM javatest.test;
-SELECT * FROM javatest.create_temp_file_trusted();
-
--- org.postgresql.pljava.example.TupleReturn
+-- org.postgresql.example.TupleReturn
 
 select base, incbase from javatest.tupleReturnExample(2,4);
 select base, incbase from javatest.tupleReturnExample2(3,5);
@@ -118,64 +94,60 @@ select split_part(javatest.tupleReturnToString(javatest.tupleReturnExample(4,6))
 select split_part(javatest.tupleReturnToString(javatest.tupleReturnExample(5,7)), ',', 2);
 select base, incbase from javatest.setReturnExample(6,8);
 
--- org.postgresql.pljava.example.HugeResultSet
+-- org.postgresql.example.HugeResultSet
 
 select sum(base), count(*) from javatest.hugeResult(10000);
 select sum(base), count(*) from javatest.hugeNonImmutableResult(10000);
 
--- org.postgresql.pljava.example.Users
+-- org.postgresql.example.Users
 select count(*) > 0 from javatest.listSupers();
 select count(*) > 0 from javatest.listNonSupers();
 select usename, usesuper from javatest.listNonSupers() where usename = 'pljava_test';
 
--- org.postgresql.pljava.example.UsingProperties
+-- org.postgresql.example.UsingProperties
 
 select * from javatest.propertyExample();
 
--- org.postgresql.pljava.example.UsingPropertiesAsResultSet
+-- org.postgresql.example.UsingPropertiesAsResultSet
 
 select * from javatest.resultSetPropertyExample();
 select * from javatest.scalarPropertyExample();
 
--- org.postgresql.pljava.example.RandomInts
+-- org.postgresql.example.RandomInts
 
 select count(*) from javatest.randomInts(123);
 
--- org.postgresql.pljava.example.LoggerTest
+-- org.postgresql.example.LoggerTest
 
 -- pg_regress cannot parse Java timestamp, so we put the message that won't be
 -- displayed just to make sure the function runs well and returns no error
 select javatest.logMessage('FINE', '123');
 
--- org.postgresql.pljava.example.BinaryColumnTest
-
-select count(*) from javatest.binaryColumnTest();
-
--- org.postgresql.pljava.example.MetaDataBooleans
+-- org.postgresql.example.MetaDataBooleans
 
 select * from javatest.getMetaDataBooleans() where method_name in ('isReadOnly', 'supportsColumnAliasing');
 
--- org.postgresql.pljava.example.MetaDataStrings
+-- org.postgresql.example.MetaDataStrings
 
 select * from javatest.getMetaDataStrings() where method_name in ('getDatabaseProductName', 'getDriverName');
 
--- org.postgresql.pljava.example.MetaDataInts
+-- org.postgresql.example.MetaDataInts
 
 select * from javatest.getMetaDataInts() where method_name in ('getMaxRowSize', 'getMaxColumnsInTable');
 
--- org.postgresql.pljava.example.MetaDataTest
+-- org.postgresql.example.MetaDataTest
 
 select 'public;' in (select javatest.callMetaDataMethod('getSchemas()')) as q;
 
--- org.postgresql.pljava.example.ResultSetTest
+-- org.postgresql.example.ResultSetTest
 
 select javatest.executeSelect('select generate_series(1,10) as a');
 
--- org.postgresql.pljava.example.SetOfRecordTest
+-- org.postgresql.example.SetOfRecordTest
 
 select * from javatest.executeSelectToRecords('select id, ''test'' || id as id2 from generate_series(1,11) as id') t(a varchar, b varchar);
 
--- org.postgresql.pljava.example.AnyTest
+-- org.postgresql.example.AnyTest
 
 select javatest.loganyelement(1::int);
 select javatest.loganyelement('a'::varchar);
@@ -184,7 +156,7 @@ select javatest.loganyelement('b'::bytea);
 select javatest.makearray(1::int);
 select javatest.makearray('a'::varchar);
 
--- org.postgresql.pljava.example.SPIActions
+-- org.postgresql.example.SPIActions
 
 SELECT javatest.transferPeople(1);
 SELECT * FROM employees1 order by id;
