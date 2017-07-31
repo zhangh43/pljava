@@ -6,7 +6,7 @@ image_resource:
 inputs:
   - name: bin_gpdb
   - name: pljava_src
-  - name: m2repository
+  - name: gpdb_src
 
 outputs:
   - name: pljava_gppkg
