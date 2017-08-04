@@ -123,15 +123,15 @@ function test() {
 
     case "$OSVER" in
         suse11)
-        cp pljava_bin/pljava-*.gppkg pljava_gppkg/pljava-1.4.0-gp5-sles11-x86_64.gppkg
+        cp pljava_bin/pljava-*.gppkg pljava_gppkg/pljava-1.4.1-gp5-sles11-x86_64.gppkg
         echo "PL/Java test succeeded"
         ;;
         centos6)
-        cp pljava_bin/pljava-*.gppkg pljava_gppkg/pljava-1.4.0-gp5-rhel6-x86_64.gppkg
+        cp pljava_bin/pljava-*.gppkg pljava_gppkg/pljava-1.4.1-gp5-rhel6-x86_64.gppkg
         echo "PL/Java test succeeded"
         ;;
         centos7)
-        cp pljava_bin/pljava-*.gppkg pljava_gppkg/pljava-1.4.0-gp5-rhel7-x86_64.gppkg
+        cp pljava_bin/pljava-*.gppkg pljava_gppkg/pljava-1.4.1-gp5-rhel7-x86_64.gppkg
         echo "PL/Java test succeeded"
         ;;
         *) echo "Unknown OS: $OSVER"; exit 1 ;;
