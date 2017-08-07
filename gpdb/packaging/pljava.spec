@@ -25,7 +25,6 @@ echo "export LD_LIBRARY_PATH=\$JAVA_HOME/jre/lib/amd64/server:\$LD_LIBRARY_PATH"
 %postun
 sed -i".bk" "s|export LD_LIBRARY_PATH=\$JAVA_HOME/jre/lib/amd64/server:\$LD_LIBRARY_PATH||g" $GPHOME/greenplum_path.sh
 sed -i".bk" "s|export JAVA_HOME||g" $GPHOME/greenplum_path.sh
-sed -i".bk" "s|JAVA_HOME||g" $GPHOME/greenplum_path.sh
 rm -rf $GPHOME/greenplum_path.sh.bk
 
 %files
