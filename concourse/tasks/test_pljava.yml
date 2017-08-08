@@ -9,9 +9,6 @@ inputs:
   - name: pljava_bin
   - name: gpdb_src
 
-outputs:
-  - name: pljava_gppkg
-
 run:
   path: pljava_src/concourse/scripts/test_pljava.sh
 
