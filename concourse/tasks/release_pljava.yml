@@ -5,6 +5,7 @@ image_resource:
 
 inputs:
   - name: pljava_bin
+  - name: pljava_src
 
 outputs:
   - name: pljava_gppkg
