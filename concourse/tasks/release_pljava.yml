@@ -1,0 +1,17 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+
+inputs:
+  - name: pljava_src
+  - name: pljava_bin
+
+outputs:
+  - name: pljava_gppkg
+
+run:
+  path: pljava_src/concourse/scripts/release_pljava.sh
+
+params: 
+  OSVER:
