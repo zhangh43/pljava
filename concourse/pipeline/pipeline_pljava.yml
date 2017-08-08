@@ -287,6 +287,7 @@ jobs:
 - name: pljava_centos7_release
   plan:
   - aggregate:
+    - get: pljava_src
     - get: release_trigger
       trigger: true
     - get: pljava_bin
@@ -296,8 +297,6 @@ jobs:
     - task: release_pljava
       file: pljava_src/concourse/tasks/release_pljava.yml
       image: pljava_centos7_img
-      input_mapping:
-        pljava_src: release_trigger
       params:
         OSVER: centos7
         PL_GP_VERSION: "5.0"
@@ -309,6 +308,7 @@ jobs:
 - name: pljava_centos6_release
   plan:
   - aggregate:
+    - get: pljava_src
     - get: release_trigger
       trigger: true
     - get: pljava_bin
@@ -318,8 +318,6 @@ jobs:
     - task: release_pljava
       file: pljava_src/concourse/tasks/release_pljava.yml
       image: pljava_centos6_img
-      input_mapping:
-        pljava_src: release_trigger
       params:
         OSVER: centos6
         PL_GP_VERSION: "5.0"
@@ -331,6 +329,7 @@ jobs:
 - name: pljava_sles11_release
   plan:
   - aggregate:
+    - get: pljava_src
     - get: release_trigger
       trigger: true
     - get: pljava_bin
@@ -340,8 +339,6 @@ jobs:
     - task: release_pljava
       file: pljava_src/concourse/tasks/release_pljava.yml
       image: pljava_sles11_img
-      input_mapping:
-        pljava_src: release_trigger
       params:
         OSVER: suse11
         PL_GP_VERSION: "5.0"
