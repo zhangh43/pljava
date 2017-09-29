@@ -93,7 +93,7 @@ resources:
 - name: gpdb_src
   type: git
   source:
-    branch: master
+    branch: 5X_STABLE
     uri: https://github.com/greenplum-db/gpdb.git
 
 - name: release_trigger
@@ -170,6 +170,7 @@ jobs:
       resource: bin_gpdb_centos7
     - get: pljava_centos7_img
     - get: gpdb_src
+      trigger: true
   - aggregate:
     - task: pljava_gpdb_build
       file: pljava_src/concourse/tasks/build_pljava.yml
@@ -191,6 +192,7 @@ jobs:
       resource: bin_gpdb_centos6
     - get: pljava_centos6_img
     - get: gpdb_src
+      trigger: true
   - aggregate:
     - task: pljava_gpdb_build
       file: pljava_src/concourse/tasks/build_pljava.yml
@@ -212,6 +214,7 @@ jobs:
       resource: bin_gpdb_sles11
     - get: pljava_sles11_img
     - get: gpdb_src
+      trigger: true
   - aggregate:
     - task: pljava_gpdb_build
       file: pljava_src/concourse/tasks/build_pljava.yml
@@ -236,6 +239,7 @@ jobs:
       resource: bin_gpdb_centos7
     - get: pljava_centos7_img
     - get: gpdb_src
+      trigger: true
   - aggregate:
     - task: test_pljava
       file: pljava_src/concourse/tasks/test_pljava.yml
@@ -256,6 +260,7 @@ jobs:
       resource: bin_gpdb_centos6
     - get: pljava_centos6_img
     - get: gpdb_src
+      trigger: true
   - aggregate:
     - task: test_pljava
       file: pljava_src/concourse/tasks/test_pljava.yml
@@ -276,6 +281,7 @@ jobs:
       resource: bin_gpdb_sles11
     - get: pljava_sles11_img
     - get: gpdb_src
+      trigger: true
   - aggregate:
     - task: test_pljava
       file: pljava_src/concourse/tasks/test_pljava.yml
