@@ -134,6 +134,7 @@ jobs:
     - get: pljava_src
       trigger: true
     - get: bin_gpdb
+      trigger: true
       resource: bin_gpdb4_centos5
     - get: pljava_centos5_img
     - get: jre
@@ -155,6 +156,7 @@ jobs:
     - get: pljava_src
       trigger: true
     - get: bin_gpdb
+      trigger: true
       resource: bin_gpdb4_sles11
     - get: pljava_sles11_img
     - get: jre
@@ -180,6 +182,7 @@ jobs:
       resource: pljava_gpdb4_centos5_build
       passed: [pljava_gpdb4_centos5_build]
     - get: bin_gpdb
+      trigger: true
       resource: bin_gpdb4_centos5
     - get: pljava_centos5_img
     - get: gpdb_src
@@ -200,6 +203,7 @@ jobs:
       resource: pljava_gpdb4_sles11_build
       passed: [pljava_gpdb4_sles11_build]
     - get: bin_gpdb
+      trigger: true
       resource: bin_gpdb4_sles11
     - get: pljava_sles11_img
     - get: gpdb_src
