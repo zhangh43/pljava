@@ -34,25 +34,25 @@ resources:
 - name: bin_gpdb4_centos5
   type: s3
   source:
-    bucket: {{gpdb4-bucket-name}}
+    bucket: {{bucket-name}}
     region_name: {{aws-region}}
-    access_key_id: {{gpdb4-bucket-access-key-id}}
-    secret_access_key: {{gpdb4-bucket-secret-access-key}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
     versioned_file: bin_gpdb_centos/bin_gpdb.tar.gz
 
 - name: bin_gpdb4_sles11
   type: s3
   source:
-    bucket: {{gpdb4-bucket-name}}
+    bucket: {{bucket-name}}
     region_name: {{aws-region}}
-    access_key_id: {{gpdb4-bucket-access-key-id}}
-    secret_access_key: {{gpdb4-bucket-secret-access-key}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
     versioned_file: bin_gpdb_sles/bin_gpdb.tar.gz
 
 - name: gpdb_src
   type: git
   source:
-    branch: master
+    branch: 5X_STABLE
     uri: https://github.com/greenplum-db/gpdb.git
 
 - name: pljava_src
@@ -73,8 +73,8 @@ resources:
   source:
     bucket: noarch-toolchain-snowflakes
     region_name: {{aws-region}}
-    access_key_id: {{gpdb4-bucket-access-key-id}}
-    secret_access_key: {{gpdb4-bucket-secret-access-key}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
     versioned_file: jre/jre-1.6.0_32.tgz
 
 - name: pljava_sles11_img
