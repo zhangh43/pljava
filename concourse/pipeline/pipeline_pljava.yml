@@ -78,12 +78,6 @@ resources:
     repository: pivotaldata/centos-gpdb-dev
     tag: '7-gcc6.2-llvm3.7'
 
-- name: pljava_sles11_img
-  type: docker-image
-  source:
-    repository: pivotaldata/sles-gpdb-dev
-    tag: '11-beta'
-
 - name: pljava_src
   type: git
   source:
@@ -93,7 +87,7 @@ resources:
 - name: gpdb_src
   type: git
   source:
-    branch: 5X_STABLE
+    branch: {{gpdb-git-branch}}
     uri: https://github.com/greenplum-db/gpdb.git
 
 - name: release_trigger
@@ -212,13 +206,11 @@ jobs:
       trigger: true
     - get: bin_gpdb
       resource: bin_gpdb_sles11
-    - get: pljava_sles11_img
     - get: gpdb_src
       trigger: true
   - aggregate:
     - task: pljava_gpdb_build
-      file: pljava_src/concourse/tasks/build_pljava.yml
-      image: pljava_sles11_img
+      file: pljava_src/concourse/tasks/build_pljava_sles.yml
       params:
         OSVER: suse11
         PL_GP_VERSION: "5.0"
@@ -279,13 +271,11 @@ jobs:
       resource: pljava_gpdb_sles11_build
     - get: bin_gpdb
       resource: bin_gpdb_sles11
-    - get: pljava_sles11_img
     - get: gpdb_src
       trigger: true
   - aggregate:
     - task: test_pljava
-      file: pljava_src/concourse/tasks/test_pljava.yml
-      image: pljava_sles11_img
+      file: pljava_src/concourse/tasks/test_pljava_sles.yml
       params:
         OSVER: suse11
         PL_GP_VERSION: "5.0"
@@ -340,11 +330,9 @@ jobs:
       trigger: true
     - get: pljava_bin
       resource: pljava_gpdb_sles11_build
-    - get: pljava_sles11_img
   - aggregate:
     - task: release_pljava
-      file: pljava_src/concourse/tasks/release_pljava.yml
-      image: pljava_sles11_img
+      file: pljava_src/concourse/tasks/release_pljava_sles.yml
       params:
         OSVER: suse11
         PL_GP_VERSION: "5.0"
