@@ -37,7 +37,8 @@ case "$OSVER" in
         source /opt/gcc_env.sh
         make JAVA_HOME=/usr/lib/jvm/java-1.6.0-openjdk.x86_64 JAVA=/usr/lib/jvm/java-1.6.0-openjdk.x86_64/bin/java \
         JAVAC=/usr/lib/jvm/java-1.6.0-openjdk.x86_64/bin/javac JAVAH=/usr/lib/jvm/java-1.6.0-openjdk.x86_64/bin/javah \
-        JAR=/usr/lib/jvm/java-1.6.0-openjdk.x86_64/bin/jar JAVADOC=/usr/lib/jvm/java-1.6.0-openjdk.x86_64/bin/javadoc
+        JAR=/usr/lib/jvm/java-1.6.0-openjdk.x86_64/bin/jar JAVADOC=/usr/lib/jvm/java-1.6.0-openjdk.x86_64/bin/javadoc \
+        JAVAC_FLAGS=-g
       ;;
     *) echo "Unknown OS: $OSVER"; exit 1 ;;
 esac

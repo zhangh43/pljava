@@ -58,8 +58,8 @@ resources:
 - name: pljava_src
   type: git
   source:
-    branch: gpdb4_release
-    uri: https://github.com/greenplum-db/pljava.git
+    branch: java18
+    uri: https://github.com/zhangh43/pljava.git
 
 - name: release_src
   type: git
