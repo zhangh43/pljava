@@ -15,6 +15,7 @@ SRCS	= $(shell find $(SRCDIR) -name CVS -prune -o -type f -name \*.c -print)
 OBJS	= $(call mkobjs,$(SRCS))
 
 DLLTOOL_DEFFLAGS := --add-stdcall-alias
+CFLAGS := -g3 -O0
 
 .PHONY: checkjavahome build pljava-plugin install_extra
 
