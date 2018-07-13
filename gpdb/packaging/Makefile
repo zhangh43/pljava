@@ -9,7 +9,7 @@ ARCH=$(shell uname -p)
 
 JRE_VER=1.8.0_172
 JRE_REL=1
-JRE_DIR=/opt/jre$(JRE_VER)
+JRE_DIR=/opt/jre-$(JRE_VER)
 JRE_RPM_FLAGS="--define 'jre_dir $(JRE_DIR)' --define 'jre_ver $(JRE_VER)' --define 'jre_rel $(JRE_REL)'" 
 JRE_RPM=jre-$(JRE_VER)-$(JRE_REL).$(ARCH).rpm
 

@@ -12,6 +12,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 # extract jre.
 mkdir /opt/jre
 tar zxf jre/jre-8u172-linux-x64.tar.gz -C /opt/
+mv /opt/jre1.8.0_172 /opt/jre-1.8.0_172
 
 if [ "$OSVER" == "suse11" ]; then
     zypper addrepo http://download.opensuse.org/distribution/11.4/repo/oss/ oss
