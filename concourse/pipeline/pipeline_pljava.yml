@@ -152,6 +152,15 @@ resources:
     regexp: release/gpdb5/pljava/pljava-(.*).gppkg
 
 
+- name: jdk
+  type: s3
+  source:
+    bucket: {{pl-bucket-name}}
+    region_name: {{aws-region}}
+    access_key_id: {{bucket-access-key-id}}
+    secret_access_key: {{bucket-secret-access-key}}
+    regexp: dependancy/jdk-8(.*).rpm
+
 jobs:
 ## GPDB5 PL/Java Jobs
 ##
@@ -165,6 +174,7 @@ jobs:
     - get: pljava_centos7_img
     - get: gpdb_src
       trigger: true
+    - get: jdk
   - aggregate:
     - task: pljava_gpdb_build
       file: pljava_src/concourse/tasks/build_pljava.yml
@@ -187,6 +197,7 @@ jobs:
     - get: pljava_centos6_img
     - get: gpdb_src
       trigger: true
+    - get: jdk
   - aggregate:
     - task: pljava_gpdb_build
       file: pljava_src/concourse/tasks/build_pljava.yml
@@ -208,6 +219,7 @@ jobs:
       resource: bin_gpdb_sles11
     - get: gpdb_src
       trigger: true
+    - get: jdk
   - aggregate:
     - task: pljava_gpdb_build
       file: pljava_src/concourse/tasks/build_pljava_sles.yml
