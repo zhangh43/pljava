@@ -52,9 +52,8 @@ function _main() {
       zypper addrepo http://download.opensuse.org/distribution/11.4/repo/oss/ oss
       zypper --no-gpg-checks -n install readline-devel zlib-devel curl-devel libbz2-devel python-devel libopenssl1_0_0 libopenssl-devel htop libffi45 libffi45-devel krb5-devel make python-xml
       zypper --no-gpg-checks -n install openssh unzip less glibc-locale gmp-devel mpfr-devel
-	  # install new JAVA
-	  wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie"  http://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/jdk-8u172-linux-x64.rpm -O java8.rpm
-	  rpm -ivh java8.rpm
+      # install JAVA8 on sles
+      rpm -ivh jdk/jdk-8u181-linux-x64.rpm
     else
       yum install -y wget
     fi
