@@ -403,28 +403,33 @@ char *InstallHelper_hello()
 
 	Invocation_pushBootContext(&ctx);
 	nativeVer = String_createJavaStringFromNTS(SO_VERSION_STRING);
+	elog(LOG, "511test1:%s",MyProcPort->user_name);
 	user = String_createJavaStringFromNTS(MyProcPort->user_name);
+	elog(LOG, "511test2:%s",MyProcPort->database_name);
 	dbname = String_createJavaStringFromNTS(MyProcPort->database_name);
+	elog(LOG, "511test3:%s",clusternameC);
 	if ( '\0' == *clusternameC )
 		clustername = NULL;
 	else
 		clustername = String_createJavaStringFromNTS(clusternameC);
 
+	elog(LOG, "511test4:%s",DataDir);
 	ddir = String_createJavaStringFromNTS(DataDir);
 
 	get_pkglib_path(my_exec_path, pathbuf);
 	ldir = String_createJavaStringFromNTS(pathbuf);
-
+	elog(LOG, "511test5:%s",pathbuf);
 	get_share_path(my_exec_path, pathbuf);
 	sdir = String_createJavaStringFromNTS(pathbuf);
-
+	elog(LOG, "511test6:%s",pathbuf);
 	get_etc_path(my_exec_path, pathbuf);
 	edir = String_createJavaStringFromNTS(pathbuf);
-
+	elog(LOG, "511test7:%s",pathbuf);
 	greeting = JNI_callStaticObjectMethod(
 		s_InstallHelper_class, s_InstallHelper_hello,
 		nativeVer, user, dbname, clustername, ddir, ldir, sdir, edir);
 
+	elog(LOG, "511test8");
 	JNI_deleteLocalRef(nativeVer);
 	JNI_deleteLocalRef(user);
 	JNI_deleteLocalRef(dbname);
