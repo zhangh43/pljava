@@ -400,8 +400,8 @@ char *InstallHelper_hello()
 	jstring greeting;
 	char *greetingC;
 	char const *clusternameC = pljavaClusterName();
-
-	elog(LOG, "MyProcPort addr = %p, username addr=%p", MyProcPort, MyProcPort->user_name);
+	
+	elog(LOG, "MyProcPort addr = %p, username addr=%p", MyProcPort, &MyProcPort->user_name);
 	Invocation_pushBootContext(&ctx);
 	nativeVer = String_createJavaStringFromNTS(SO_VERSION_STRING);
 	elog(LOG, "511test1:%s",MyProcPort->user_name);
