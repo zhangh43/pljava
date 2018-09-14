@@ -15,6 +15,7 @@ INCLDIR	:= -I$(MODULEROOT)/include -I$(JNIDIR)
 mkobjs	= $(subst $(SRCDIR)/,,$(1:%.c=%.o))
 SRCS	= $(shell find $(SRCDIR) -name CVS -prune -o -type f -name \*.c -print)
 OBJS	= $(call mkobjs,$(SRCS))
+override CFLAGS += -fPIC
 
 DLLTOOL_DEFFLAGS := --add-stdcall-alias
 
@@ -22,7 +23,7 @@ DLLTOOL_DEFFLAGS := --add-stdcall-alias
 
 $(OBJS): %.o : $(SRCDIR)/%.c
 	@-mkdir -p $(@D)
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+	$(CC) -c  $(CFLAGS) $(CPPFLAGS) $< -o $@
 
 # Must include PGXS at this point since it defines PORTNAME and VERSION
 #
